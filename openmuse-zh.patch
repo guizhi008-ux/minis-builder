@@ -1,0 +1,3525 @@
+diff --git a/apps/mobile/src/BrowserConsole.web.tsx b/apps/mobile/src/BrowserConsole.web.tsx
+index eb15e33..64f2279 100644
+--- a/apps/mobile/src/BrowserConsole.web.tsx
++++ b/apps/mobile/src/BrowserConsole.web.tsx
+@@ -1,6 +1,6 @@
+ export default function BrowserConsole({
+   url,
+-  title = "Remote browser session console",
++  title = "远程浏览器会话控制台",
+   sandboxed = false,
+ }: {
+   url: string;
+diff --git a/apps/mobile/src/DateTimeEditor.tsx b/apps/mobile/src/DateTimeEditor.tsx
+index 92e78ee..70426ad 100644
+--- a/apps/mobile/src/DateTimeEditor.tsx
++++ b/apps/mobile/src/DateTimeEditor.tsx
+@@ -29,7 +29,7 @@ export default function DateTimeEditor({
+         setTime(local.time);
+       }
+     } catch {
+-      setError("Choose a valid time zone.");
++      setError("请选择有效的时区。");
+     }
+   }, [value, timeZone, allDay]);
+   function change(nextDate: string, nextTime: string) {
+diff --git a/apps/mobile/src/PdfReader.native.tsx b/apps/mobile/src/PdfReader.native.tsx
+index c5ead89..430035a 100644
+--- a/apps/mobile/src/PdfReader.native.tsx
++++ b/apps/mobile/src/PdfReader.native.tsx
+@@ -45,7 +45,7 @@ export default function PdfReader({ url, token, pageCount }: PdfReaderProps) {
+             disabled={scale <= 1}
+             onPress={() => setScale(Math.max(1, scale - 0.25))}
+           >
+-            Zoom out
++            缩小
+           </Button>
+           <Button
+             small
+@@ -53,7 +53,7 @@ export default function PdfReader({ url, token, pageCount }: PdfReaderProps) {
+             disabled={scale >= 3}
+             onPress={() => setScale(Math.min(3, scale + 0.25))}
+           >
+-            Zoom in
++            放大
+           </Button>
+         </View>
+       </View>
+diff --git a/apps/mobile/src/PdfReader.web.tsx b/apps/mobile/src/PdfReader.web.tsx
+index 017fdf5..dca9c63 100644
+--- a/apps/mobile/src/PdfReader.web.tsx
++++ b/apps/mobile/src/PdfReader.web.tsx
+@@ -32,21 +32,21 @@ export default function PdfReader({ url, pageCount }: PdfReaderProps) {
+         </View>
+         <View style={[s.row, { gap: 8 }]}>
+           <Button small icon={Minus} disabled={zoom <= 50} onPress={() => setZoom(zoom - 25)}>
+-            Zoom out
++            缩小
+           </Button>
+           <Text style={s.small}>{zoom}%</Text>
+           <Button small icon={Plus} disabled={zoom >= 200} onPress={() => setZoom(zoom + 25)}>
+-            Zoom in
++            放大
+           </Button>
+         </View>
+       </View>
+       <iframe
+         key={`${page}:${zoom}`}
+-        title="PDF document reader"
++        title="PDF 文档阅读器"
+         src={`${url}#page=${page}&zoom=${zoom}`}
+         style={{ height: 570, width: "100%", border: 0, borderRadius: 12, background: "#e7e9e3" }}
+       />
+-      <Text style={s.small}>Use the reader toolbar to download or print a copy.</Text>
++      <Text style={s.small}>使用阅读器工具栏下载或打印一份副本。</Text>
+     </View>
+   );
+ }
+diff --git a/apps/mobile/src/agent-ui.tsx b/apps/mobile/src/agent-ui.tsx
+index ead8339..61f5e58 100644
+--- a/apps/mobile/src/agent-ui.tsx
++++ b/apps/mobile/src/agent-ui.tsx
+@@ -64,7 +64,7 @@ function stamp(value?: string) {
+         hour: "numeric",
+         minute: "2-digit",
+       })
+-    : "Not checked yet";
++    : "尚未检查";
+ }
+ function errorText(e: unknown) {
+   return e instanceof Error ? e.message : String(e);
+@@ -77,15 +77,15 @@ export function AgentStatus() {
+   if (data?.worker.running && !error) return null;
+   return (
+     <View style={{ gap: 8 }}>
+-      <ErrorNotice error={error ? `Agent updates unavailable. ${error}` : ""} />
++      <ErrorNotice error={error ? `智能体更新不可用。${error}` : ""} />
+       {!!error && (
+         <Button small onPress={() => void refresh().catch(() => {})}>
+-          Reconnect agent
++          重新连接智能体
+         </Button>
+       )}
+       {!data && !error && <ActivityIndicator color={colors.blueDark} />}
+       {data && !data.worker.running && (
+-        <Text style={s.small}>Worker is offline. Saved work will continue when it reconnects.</Text>
++        <Text style={s.small}>后台执行器离线。已保存的工作将在重新连接后继续。</Text>
+       )}
+     </View>
+   );
+@@ -157,7 +157,7 @@ export function TaskCard({
+         )}
+         {waiting && (
+           <Text style={[s.small, { color: colors.blueDark, fontWeight: "600" }]}>
+-            {task.status === "waiting_approval" ? "Review requested" : "Your input is needed"}
++            {task.status === "waiting_approval" ? "已请求审核" : "需要你处理"}
+           </Text>
+         )}
+       </Card>
+@@ -194,7 +194,7 @@ export function AgentActivityScreen() {
+       <View style={[s.row, { gap: 8 }]}>
+         {["All", "In progress", "Finished"].map((item) => (
+           <Button key={item} small primary={filter === item} onPress={() => setFilter(item)}>
+-            {item}
++            {({ All: "全部", "In progress": "进行中", Finished: "已完成" } as Record<string, string>)[item]}
+           </Button>
+         ))}
+       </View>
+@@ -204,11 +204,11 @@ export function AgentActivityScreen() {
+       {!tasks.length && (
+         <Empty
+           icon={ListChecks}
+-          title="A place for the work"
+-          detail="Delegate a task in Chat. Its plan, progress and results stay here."
++          title="一切工作汇集于此"
++          detail="在对话中委派任务，其计划、进度与结果都会留在这里。"
+         />
+       )}
+-      <SectionHeading title="Reviews & receipts" />
++      <SectionHeading title="评审与回执" />
+       <ActivityScreen />
+     </View>
+   );
+@@ -234,7 +234,7 @@ export function EvidenceList({ items }: { items: Evidence[] }) {
+                 void Linking.openURL(item.url || "").catch((e) => setError(errorText(e)))
+               }
+             >
+-              Open source
++              打开来源
+             </Button>
+           )}
+           {item.kind === "mail" && workspace.mail.some((mail) => mail.id === item.id) && (
+@@ -245,7 +245,7 @@ export function EvidenceList({ items }: { items: Evidence[] }) {
+                 if (mail) open({ type: "mail", mail });
+               }}
+             >
+-              View email
++              查看邮件
+             </Button>
+           )}
+           {item.kind === "file" && workspace.files.some((file) => file.id === item.id) && (
+@@ -256,7 +256,7 @@ export function EvidenceList({ items }: { items: Evidence[] }) {
+                 if (file) open({ type: "file", file });
+               }}
+             >
+-              View file
++              查看文件
+             </Button>
+           )}
+         </View>
+@@ -336,11 +336,11 @@ export function TaskDetail({ taskId }: { taskId: string }) {
+             (value) => typeof value !== "string" && typeof value !== "boolean",
+           )
+         )
+-          throw new Error("Form fields must be a JSON object with text or true/false values.");
++          throw new Error("表单字段必须是一个 JSON 对象，其值为文本或 true/false。");
+         parsed = raw as Record<string, string | boolean>;
+       }
+       await act("input", {
+-        answer: answer.trim() || "Provided the requested fields.",
++        answer: answer.trim() || "已提供所要求的字段。",
+         fields: parsed,
+       });
+     } catch (e) {
+@@ -354,7 +354,7 @@ export function TaskDetail({ taskId }: { taskId: string }) {
+       await refreshWorkspace();
+       const snapshot = await api.request<typeof workspace>("/api/workspace");
+       const action = snapshot.actions.find((item) => item.id === task?.actionId);
+-      if (!action) throw new Error("This review is not available yet. Refresh and try again.");
++      if (!action) throw new Error("审核内容尚未就绪，请刷新后重试。");
+       open({ type: "review", action });
+     } catch (e) {
+       setError(errorText(e));
+@@ -374,9 +374,9 @@ export function TaskDetail({ taskId }: { taskId: string }) {
+     .filter(Boolean);
+   return (
+     <Sheet
+-      title={task?.title || "Task"}
++      title={task?.title || "任务"}
+       subtitle={
+-        task ? `${statusLabel(task.status)} · ${stamp(task.updatedAt)}` : "Loading saved progress…"
++        task ? `${statusLabel(task.status)} · ${stamp(task.updatedAt)}` : "正在加载已保存的进度…"
+       }
+       onClose={close}
+     >
+@@ -392,7 +392,7 @@ export function TaskDetail({ taskId }: { taskId: string }) {
+             <Text style={s.muted}>
+               {milestone?.title
+                 ? `Milestone: ${milestone.title}. Completion is tracked manually in Goals.`
+-                : "The linked milestone is no longer available. This task and its results are still accessible."}
++                : "关联的里程碑已失效。此任务及其结果仍可访问。"}
+             </Text>
+           )}
+           <View style={[s.row, { gap: 8, flexWrap: "wrap" }]}>
+@@ -405,7 +405,7 @@ export function TaskDetail({ taskId }: { taskId: string }) {
+                 busy={busy}
+                 onPress={() => void act("control", { action: "pause" })}
+               >
+-                Pause
++                暂停
+               </Button>
+             )}
+             {task.status === "paused" && (
+@@ -415,7 +415,7 @@ export function TaskDetail({ taskId }: { taskId: string }) {
+                 busy={busy}
+                 onPress={() => void act("control", { action: "resume" })}
+               >
+-                Resume
++                继续
+               </Button>
+             )}
+             {task.status === "failed" && (
+@@ -425,7 +425,7 @@ export function TaskDetail({ taskId }: { taskId: string }) {
+                 busy={busy}
+                 onPress={() => void act("control", { action: "retry" })}
+               >
+-                Retry task
++                重试任务
+               </Button>
+             )}
+             {activeTask(task) && (
+@@ -436,22 +436,22 @@ export function TaskDetail({ taskId }: { taskId: string }) {
+                 busy={busy}
+                 onPress={() => void act("control", { action: "cancel" })}
+               >
+-                Cancel task
++                取消任务
+               </Button>
+             )}
+           </View>
+           {task.status === "waiting_approval" && (
+             <Card style={{ backgroundColor: colors.lavender, gap: 12 }}>
+-              <Text style={s.heading}>Ready for your review</Text>
+-              <Text style={s.muted}>Review the exact action and account before it proceeds.</Text>
++              <Text style={s.heading}>待你审阅</Text>
++              <Text style={s.muted}>执行前，请核对确切的操作与账号。</Text>
+               <Button primary busy={busy} onPress={() => void review()}>
+-                Review action
++                审核操作
+               </Button>
+             </Card>
+           )}
+           {task.status === "waiting_input" && (
+             <Card style={{ backgroundColor: colors.sky, gap: 10 }}>
+-              <Text style={s.heading}>{task.question || "A detail from you will help"}</Text>
++              <Text style={s.heading}>{task.question || "补充一点细节会有帮助"}</Text>
+               {fieldNames.map((name) =>
+                 missing.some(
+                   (f) => typeof f === "object" && f && f.name === name && f.type === "checkbox",
+@@ -475,21 +475,21 @@ export function TaskDetail({ taskId }: { taskId: string }) {
+               )}
+               {!fieldNames.length && (
+                 <Field
+-                  label="Your answer"
++                  label="你的回答"
+                   value={answer}
+                   onChangeText={setAnswer}
+                   multiline
+-                  placeholder="Add the missing details…"
++                  placeholder="补充缺失的细节…"
+                 />
+               )}
+               {task.kind === "document" && !fieldNames.length && (
+                 <>
+                   <Button small onPress={() => setShowFieldJson(!showFieldJson)}>
+-                    Form field values
++                    表单字段值
+                   </Button>
+                   {showFieldJson && (
+                     <Field
+-                      label="Fields (JSON: field name to value)"
++                      label="字段（JSON：字段名 → 值）"
+                       value={fieldJson}
+                       onChangeText={setFieldJson}
+                       multiline
+@@ -505,13 +505,13 @@ export function TaskDetail({ taskId }: { taskId: string }) {
+                 disabled={!answer.trim() && !Object.keys(fields).length && !fieldJson.trim()}
+                 onPress={() => void submitInput()}
+               >
+-                Continue task
++                继续任务
+               </Button>
+             </Card>
+           )}
+           {!!task.plan.length && (
+             <Card style={{ gap: 15 }}>
+-              <Text style={s.heading}>Plan</Text>
++              <Text style={s.heading}>计划</Text>
+               {task.plan.map((step, index) => (
+                 <View key={step.id} style={[s.row, { gap: 10, alignItems: "flex-start" }]}>
+                   <Text
+@@ -543,11 +543,11 @@ export function TaskDetail({ taskId }: { taskId: string }) {
+           <ErrorNotice error={task.error ?? undefined} />
+           {detail?.browsers?.map((browser) => (
+             <Card key={browser.id} style={{ gap: 10 }}>
+-              <Text style={s.heading}>{browser.title || "Agent browser"}</Text>
++              <Text style={s.heading}>{browser.title || "智能体浏览器"}</Text>
+               <Text style={s.small}>{browser.url}</Text>
+               {browser.status === "active" && browser.previewUrl && (
+                 <Image
+-                  accessibilityLabel="Agent browser preview"
++                  accessibilityLabel="智能体浏览器预览"
+                   source={{ uri: api.url(browser.previewUrl) }}
+                   style={{ width: "100%", aspectRatio: 1.6, borderRadius: 12 }}
+                 />
+@@ -571,8 +571,8 @@ export function TaskDetail({ taskId }: { taskId: string }) {
+                 }}
+               >
+                 {["running", "scheduled", "queued"].includes(task.status)
+-                  ? "Pause and open browser"
+-                  : "Open browser"}
++                  ? "暂停并打开浏览器"
++                  : "打开浏览器"}
+               </Button>
+             </Card>
+           ))}
+@@ -594,11 +594,11 @@ export function TaskDetail({ taskId }: { taskId: string }) {
+           ))}
+           {!!task.evidence.length && (
+             <View style={{ gap: 14 }}>
+-              <Text style={s.heading}>Sources</Text>
++              <Text style={s.heading}>来源</Text>
+               <EvidenceList items={task.evidence} />
+             </View>
+           )}
+-          <Text style={s.heading}>Timeline</Text>
++          <Text style={s.heading}>时间线</Text>
+           {detail?.events.map((event) => (
+             <View
+               key={event.id}
+@@ -614,7 +614,7 @@ export function TaskDetail({ taskId }: { taskId: string }) {
+             </View>
+           ))}
+           {!detail?.events.length && (
+-            <Text style={s.muted}>The worker will record each step here.</Text>
++            <Text style={s.muted}>执行器会在此处记录每个步骤。</Text>
+           )}
+         </View>
+       )}
+@@ -690,7 +690,7 @@ export function ArtifactCard({ artifact }: { artifact: AgentArtifact }) {
+         </View>
+       ))}
+       <Button small onPress={() => setExpanded(!expanded)}>
+-        {expanded ? "Show summary" : "Explore full result"}
++        {expanded ? "显示摘要" : "查看完整结果"}
+       </Button>
+     </Card>
+   );
+@@ -769,9 +769,9 @@ function FinanceArtifact({ artifact }: { artifact: AgentArtifact }) {
+           <View style={[s.row, { gap: 7 }]}>
+             {(
+               [
+-                ["Income", "income"],
+-                ["Spending", "spending"],
+-                ["Remaining", "saved"],
++                ["收入", "income"],
++                ["支出", "spending"],
++                ["结余", "saved"],
+               ] as const
+             ).map(([label, key]) => (
+               <View
+@@ -793,7 +793,7 @@ function FinanceArtifact({ artifact }: { artifact: AgentArtifact }) {
+                 >
+                   {amount(artifact.data[key])}
+                 </Text>
+-                <Text style={{ color: "#7E8289", fontSize: 8, marginTop: 4 }}>source currency</Text>
++                <Text style={{ color: "#7E8289", fontSize: 8, marginTop: 4 }}>原始币种</Text>
+               </View>
+             ))}
+           </View>
+@@ -801,15 +801,15 @@ function FinanceArtifact({ artifact }: { artifact: AgentArtifact }) {
+         <View style={[s.row, { gap: 11, paddingHorizontal: 8, paddingTop: 13, paddingBottom: 4 }]}>
+           <Text style={{ fontSize: 25 }}>💸</Text>
+           <View style={{ flex: 1, gap: 2 }}>
+-            <Text style={[s.text, { fontWeight: "600" }]}>Finance tracker</Text>
+-            <Text style={s.small}>Spending, savings, and a plan for what’s next.</Text>
++            <Text style={[s.text, { fontWeight: "600" }]}>财务追踪</Text>
++            <Text style={s.small}>支出、储蓄与下一步计划。</Text>
+           </View>
+           <ChevronRight size={17} color={colors.muted} />
+         </View>
+       </Pressable>
+       {details && (
+         <View style={{ gap: 16, padding: 10 }}>
+-          <Text style={s.label}>Where your money went</Text>
++          <Text style={s.label}>钱都花在哪儿了</Text>
+           {categories.map((category) => {
+             const row = record(category);
+             if (!row) return null;
+@@ -836,14 +836,14 @@ function FinanceArtifact({ artifact }: { artifact: AgentArtifact }) {
+             Amounts use your source currency. This summary covers the imported dates.
+           </Text>
+           {goalSaved ? (
+-            <Text style={s.text}>Your savings goal is saved in Goals.</Text>
++            <Text style={s.text}>你的储蓄目标已保存到目标中。</Text>
+           ) : (
+             <View style={{ gap: 10 }}>
+               <Field
+-                label="Turn this into a savings goal"
++                label="将其设为储蓄目标"
+                 value={goalTitle}
+                 onChangeText={setGoalTitle}
+-                placeholder="What would you like to save for?"
++                placeholder="你想存钱做什么？"
+               />
+               <ErrorNotice error={goalError} />
+               <Button
+@@ -852,12 +852,12 @@ function FinanceArtifact({ artifact }: { artifact: AgentArtifact }) {
+                 disabled={!goalTitle.trim()}
+                 onPress={() => void saveGoal()}
+               >
+-                Create savings goal
++                创建储蓄目标
+               </Button>
+             </View>
+           )}
+           <Button small onPress={() => setExpanded(!expanded)}>
+-            {expanded ? "Hide transactions" : "View transactions"}
++            {expanded ? "隐藏交易" : "查看交易"}
+           </Button>
+           {expanded &&
+             transactions.slice(0, 100).map((transaction) => {
+@@ -933,40 +933,40 @@ export function DelegateSheet({ goalId, milestoneId }: { goalId?: string; milest
+   }
+   return (
+     <Sheet
+-      title="Hand over an outcome"
+-      subtitle="OpenMuse saves a plan and keeps working on the server."
++      title="交付成果"
++      subtitle="OpenMuse 会保存方案，并在服务器上持续推进。"
+       onClose={close}
+     >
+       {milestoneId && (
+         <Text style={[s.muted, { marginBottom: 16 }]}>
+           {milestone
+             ? `${goal?.title} · ${milestone.title}. Mark this milestone complete when you are satisfied with the result.`
+-            : "This milestone is no longer available."}
++            : "此里程碑已失效。"}
+         </Text>
+       )}
+       <View style={[s.row, { flexWrap: "wrap", gap: 8, marginBottom: 20 }]}>
+         {(["plan", "document", "finance", "agent"] as const).map((item) => (
+           <Button small primary={kind === item} key={item} onPress={() => setKind(item)}>
+-            {item === "agent" ? "General task" : statusLabel(item)}
++            {item === "agent" ? "通用任务" : statusLabel(item)}
+           </Button>
+         ))}
+       </View>
+       <Field
+-        label="What would you like done?"
++        label="你想做点什么？"
+         value={prompt}
+         onChangeText={setPrompt}
+         multiline
+         placeholder={
+           kind === "document"
+-            ? "Fill the attached form and prepare a reply for my review"
++            ? "填写附带的表单，并准备一份回复供我审阅"
+             : kind === "finance"
+-              ? "Summarize my spending and suggest a savings plan"
+-              : "Make a practical plan for my week"
++              ? "总结我的支出，并给出储蓄计划建议"
++              : "帮我为这一周做个切实可行的计划"
+         }
+       />
+       {kind === "document" && (
+         <View style={{ gap: 8, marginBottom: 18 }}>
+-          <Text style={s.heading}>Choose the email with the PDF</Text>
++          <Text style={s.heading}>选择附有 PDF 的邮件</Text>
+           {workspace.mail
+             .filter((mail) => mail.attachments.length)
+             .map((mail) => (
+@@ -987,7 +987,7 @@ export function DelegateSheet({ goalId, milestoneId }: { goalId?: string; milest
+       {kind === "finance" && (
+         <>
+           <Field
+-            label="Transaction CSV"
++            label="交易 CSV"
+             value={csv}
+             onChangeText={setCsv}
+             multiline
+@@ -1002,7 +1002,7 @@ export function DelegateSheet({ goalId, milestoneId }: { goalId?: string; milest
+                 )
+               }
+             >
+-              Try example transactions
++              试用示例交易
+             </Button>
+           )}
+           <Text style={[s.small, { marginVertical: 12 }]}>
+@@ -1029,7 +1029,7 @@ export function DelegateSheet({ goalId, milestoneId }: { goalId?: string; milest
+         }
+         onPress={() => void submit()}
+       >
+-        Delegate task
++        委派任务
+       </Button>
+     </Sheet>
+   );
+@@ -1054,9 +1054,9 @@ export function IdeasScreen() {
+     <View style={{ gap: 20 }}>
+       <AgentStatus />
+       <View style={s.between}>
+-        <Text style={s.small}>Inspired by your connected apps</Text>
++        <Text style={s.small}>灵感来自你已连接的应用</Text>
+         <Button small icon={RefreshCw} busy={busy} onPress={() => void refreshIdeas()}>
+-          Find ideas
++          找灵感
+         </Button>
+       </View>
+       <ErrorNotice error={error} />
+@@ -1066,8 +1066,8 @@ export function IdeasScreen() {
+       {!ideas.length && (
+         <Empty
+           icon={Lightbulb}
+-          title="Room for a good idea"
+-          detail="Find ideas from the sources you have granted access to. Each suggestion includes its evidence."
++          title="给好点子留个位置"
++          detail="从你已授权访问的来源中寻找灵感。每条建议都附有依据。"
+         />
+       )}
+       {(data?.ideas || [])
+@@ -1075,7 +1075,7 @@ export function IdeasScreen() {
+         .map((idea) => (
+           <Card key={idea.id} style={{ gap: 7 }}>
+             <Text style={s.heading}>{idea.title}</Text>
+-            <Chip tint={colors.green}>Started</Chip>
++            <Chip tint={colors.green}>已开始</Chip>
+             {!!idea.taskId && <TaskLink taskId={idea.taskId} />}
+           </Card>
+         ))}
+@@ -1093,7 +1093,7 @@ function TaskLink({ taskId, onOpen }: { taskId: string; onOpen?: () => void }) {
+         open({ type: "task", taskId });
+       }}
+     >
+-      View task
++      查看任务
+     </Button>
+   );
+ }
+@@ -1147,7 +1147,7 @@ function IdeaCard({ idea }: { idea: Idea }) {
+           <EvidenceList items={idea.evidence} />
+           {editing && (
+             <Field
+-              label="What should OpenMuse do?"
++              label="你想让 OpenMuse 做什么？"
+               value={prompt}
+               onChangeText={setPrompt}
+               multiline
+@@ -1161,10 +1161,10 @@ function IdeaCard({ idea }: { idea: Idea }) {
+               disabled={!prompt.trim()}
+               onPress={() => void act("accept")}
+             >
+-              Start this
++              开始此项
+             </Button>
+             <Button disabled={busy} onPress={() => setEditing(!editing)}>
+-              {editing ? "Keep edits" : "Edit"}
++              {editing ? "保留修改" : "编辑"}
+             </Button>
+             <Button disabled={busy} onPress={() => void act("dismiss")}>
+               Dismiss
+@@ -1203,7 +1203,7 @@ export function GoalsScreen() {
+             <Text style={[s.heading, { color: "#189A58" }]}>Tracking</Text>
+           </View>
+           <Button small icon={Plus} onPress={() => setAdding("Tracking")}>
+-            Track
++            追踪
+           </Button>
+         </View>
+         {(showAll ? monitors : monitors.slice(0, 3)).map((item) => (
+@@ -1233,7 +1233,7 @@ export function GoalsScreen() {
+         )}
+         {monitors.length > 3 && (
+           <Button small onPress={() => setShowAll(!showAll)}>
+-            {showAll ? "Show less" : `Show ${monitors.length - 3} more`}
++            {showAll ? "收起" : `Show ${monitors.length - 3} more`}
+           </Button>
+         )}
+       </View>
+@@ -1250,7 +1250,7 @@ export function GoalsScreen() {
+               backgroundColor: "#3D9BDE",
+             }}
+           />
+-          <Text style={[s.heading, { color: colors.blueDark }]}>Goals</Text>
++          <Text style={[s.heading, { color: colors.blueDark }]}>目标</Text>
+         </View>
+         {data?.goals.map((item) => (
+           <Pressable
+@@ -1276,12 +1276,12 @@ export function GoalsScreen() {
+         ))}
+         {!data?.goals.length && (
+           <Text style={[s.muted, { paddingVertical: 10 }]}>
+-            Big plans start with one small step.
++            大计划始于一小步。
+           </Text>
+         )}
+       </View>
+       <View style={{ height: 1, backgroundColor: colors.line }} />
+-      <Text style={s.heading}>Create a goal</Text>
++      <Text style={s.heading}>创建目标</Text>
+       {[
+         { name: "Health", icon: Heart },
+         { name: "Relationships", icon: Users },
+@@ -1302,7 +1302,7 @@ export function GoalsScreen() {
+       ))}
+       {adding && (
+         <Sheet
+-          title={adding === "Tracking" ? "Track something" : "Create a goal"}
++          title={adding === "Tracking" ? "追踪一件事" : "创建目标"}
+           onClose={() => setAdding(undefined)}
+         >
+           {adding === "Tracking" ? (
+@@ -1355,26 +1355,26 @@ function GoalForm({ onDone, category }: { onDone: () => void; category?: string
+   return (
+     <Card>
+       <Field
+-        label="Your goal"
++        label="你的目标"
+         value={title}
+         onChangeText={setTitle}
+-        placeholder="Build a three-month emergency fund"
++        placeholder="建立一笔三个月开支的应急金"
+       />
+       <Field
+-        label="What does success look like?"
++        label="怎样才算成功？"
+         value={description}
+         onChangeText={setDescription}
+         multiline
+       />
+       <Field
+-        label="Milestones (one per line)"
++        label="里程碑（每行一个）"
+         value={milestones}
+         onChangeText={setMilestones}
+         multiline
+       />
+       <ErrorNotice error={error} />
+       <Button primary disabled={!title.trim()} busy={busy} onPress={() => void save()}>
+-        Create goal
++        创建目标
+       </Button>
+     </Card>
+   );
+@@ -1462,15 +1462,15 @@ function GoalCard({ goal, onOpenTask }: { goal: Goal; onOpenTask?: () => void })
+           busy={busy}
+           onPress={() => void update({ status: goal.status === "active" ? "paused" : "active" })}
+         >
+-          {goal.status === "active" ? "Pause" : "Resume"}
++          {goal.status === "active" ? "暂停" : "继续"}
+         </Button>
+         {goal.status !== "completed" && (
+           <Button small busy={busy} onPress={() => void update({ status: "completed" })}>
+-            Complete goal
++            完成目标
+           </Button>
+         )}
+         <Button small primary busy={busy} onPress={() => void plan()}>
+-          Plan next steps
++          规划下一步
+         </Button>
+       </View>
+       {data?.tasks
+@@ -1502,9 +1502,9 @@ function MonitorForm({ onDone }: { onDone: () => void }) {
+     try {
+       const minutes = Number(interval);
+       if (!Number.isInteger(minutes) || minutes < 1 || minutes > 10080)
+-        throw new Error("Use a check interval from 1 to 10080 minutes.");
++        throw new Error("检查间隔须为 1 至 10080 分钟。");
+       if (!sample && !/^https?:\/\//i.test(url.trim()))
+-        throw new Error("Enter an http or https address for a public page.");
++        throw new Error("请输入公开页面的 http 或 https 地址。");
+       await mutate("/monitors", {
+         title: title.trim(),
+         url: sample ? "sample://availability" : url.trim(),
+@@ -1522,56 +1522,56 @@ function MonitorForm({ onDone }: { onDone: () => void }) {
+   return (
+     <Card>
+       <Field
+-        label="What are you watching?"
++        label="你在关注什么？"
+         value={title}
+         onChangeText={setTitle}
+-        placeholder="A table at my favorite restaurant"
++        placeholder="在我最喜欢的餐厅订一桌"
+       />
+       {workspace.mode === "sample" && (
+         <CheckRow
+           checked={sample}
+-          label="Try the built-in availability page"
++          label="试试内置的空闲页面"
+           onPress={() => setSample(!sample)}
+         />
+       )}
+       {!sample && (
+         <Field
+-          label="Public page URL"
++          label="公开页面链接"
+           value={url}
+           onChangeText={setUrl}
+           autoCapitalize="none"
+           placeholder="https://example.com/product"
+         />
+       )}
+-      <Text style={[s.small, { marginBottom: 10 }]}>Notify me when</Text>
++      <Text style={[s.small, { marginBottom: 10 }]}>何时通知我</Text>
+       <View style={[s.row, { gap: 7, flexWrap: "wrap", marginBottom: 16 }]}>
+         {(["change", "contains", "price_below"] as const).map((item) => (
+           <Button small primary={condition === item} key={item} onPress={() => setCondition(item)}>
+             {item === "change"
+-              ? "Page changes"
++              ? "页面变化"
+               : item === "contains"
+-                ? "Text appears"
+-                : "Price drops below"}
++                ? "出现文本"
++                : "价格跌破"}
+           </Button>
+         ))}
+       </View>
+       {condition !== "change" && (
+         <Field
+-          label={condition === "contains" ? "Text to look for" : "Target price"}
++          label={condition === "contains" ? "要查找的文本" : "目标价格"}
+           value={value}
+           onChangeText={setValue}
+         />
+       )}
+       <Field
+-        label="Check every (minutes)"
++        label="检查间隔（分钟）"
+         value={interval}
+         onChangeText={setInterval}
+         keyboardType="number-pad"
+       />
+       <Text style={[s.small, { marginBottom: 14 }]}>
+         {sample
+-          ? "Changes to this built-in page stay in your workspace."
+-          : "OpenMuse checks this public page on the server and saves meaningful changes in Notifications."}
++          ? "对此内置页面的修改会保留在你的工作区中。"
++          : "OpenMuse 会在服务器上检查此公开页面，并将重要变化保存到通知。"}
+       </Text>
+       <ErrorNotice error={error} />
+       <Button
+@@ -1582,7 +1582,7 @@ function MonitorForm({ onDone }: { onDone: () => void }) {
+         }
+         onPress={() => void save()}
+       >
+-        Start tracking
++        开始追踪
+       </Button>
+     </Card>
+   );
+@@ -1623,11 +1623,11 @@ function MonitorCard({ monitor, onOpenTask }: { monitor: Monitor; onOpenTask?: (
+         <Chip tint={colors.sky}>{statusLabel(monitor.status)}</Chip>
+       </View>
+       <Text selectable style={s.small}>
+-        {monitor.url.startsWith("sample:") ? "Built-in availability page" : monitor.url}
++        {monitor.url.startsWith("sample:") ? "内置空闲页面" : monitor.url}
+       </Text>
+       <Text style={s.text}>
+         {monitor.condition === "change"
+-          ? "Watch for a page change"
++          ? "监控页面变化"
+           : monitor.condition === "contains"
+             ? `Watch for “${monitor.value}”`
+             : `Price below ${monitor.value}`}
+@@ -1652,19 +1652,19 @@ function MonitorCard({ monitor, onOpenTask }: { monitor: Monitor; onOpenTask?: (
+             busy={busy}
+             onPress={() => void act(monitor.status === "active" ? "pause" : "resume")}
+           >
+-            {monitor.status === "active" ? "Pause" : "Resume"}
++            {monitor.status === "active" ? "暂停" : "继续"}
+           </Button>
+           <Button small busy={busy} onPress={() => void act("check")}>
+-            Check now
++            立即检查
+           </Button>
+           <Button small danger busy={busy} onPress={() => void act("stop")}>
+-            Stop tracking
++            停止追踪
+           </Button>
+         </View>
+       )}
+       {monitor.url.startsWith("sample:") && monitor.status !== "stopped" && (
+         <Button small busy={busy} onPress={() => void changeSample()}>
+-          Change availability
++          更改可用状态
+         </Button>
+       )}
+       <TaskLink taskId={monitor.taskId} onOpen={onOpenTask} />
+@@ -1685,8 +1685,8 @@ export function NotificationsSheet() {
+   }
+   return (
+     <Sheet
+-      title="Notifications"
+-      subtitle="Results and decisions that need your attention."
++      title="通知"
++      subtitle="需要你关注的结果与决定。"
+       onClose={close}
+     >
+       <View style={{ gap: 14 }}>
+@@ -1698,20 +1698,20 @@ export function NotificationsSheet() {
+           >
+             <View style={s.between}>
+               <Text style={s.heading}>{item.title}</Text>
+-              {!item.read && <Chip>New</Chip>}
++              {!item.read && <Chip>新</Chip>}
+             </View>
+             <Text style={s.muted}>{item.body}</Text>
+             <Text style={s.small}>{stamp(item.createdAt)}</Text>
+             <Button small onPress={() => void read(item.id, item.taskId)}>
+-              {item.taskId ? "View task" : item.read ? "Read" : "Mark read"}
++              {item.taskId ? "查看任务" : item.read ? "已读" : "标为已读"}
+             </Button>
+           </Card>
+         ))}
+         {!data?.notifications.length && (
+           <Empty
+             icon={Bell}
+-            title="You're all caught up"
+-            detail="Results, meaningful changes and requests for your input will appear here."
++            title="全部处理完毕"
++            detail="结果、重要变化以及需要你输入的请求都会显示在这里。"
+           />
+         )}
+       </View>
+@@ -1758,26 +1758,26 @@ export function AppsScreen() {
+   const shortcuts = [
+     {
+       section: "mail" as const,
+-      title: "Mail",
+-      detail: "Read messages and prepare replies",
++      title: "邮件",
++      detail: "读取消息并准备回复",
+       icon: Mail,
+     },
+     {
+       section: "calendar" as const,
+-      title: "Calendar",
+-      detail: "Events and reviewed invitations",
++      title: "日历",
++      detail: "活动与已审核的邀请",
+       icon: CalendarDays,
+     },
+     {
+       section: "browser" as const,
+-      title: "Agent computer",
+-      detail: "Persistent browser sessions",
++      title: "智能体电脑",
++      detail: "持久浏览器会话",
+       icon: Globe2,
+     },
+     {
+       section: "files" as const,
+       title: "Files",
+-      detail: "PDFs, forms and filled copies",
++      detail: "PDF、表单及填好的副本",
+       icon: FileText,
+     },
+   ];
+@@ -1785,13 +1785,13 @@ export function AppsScreen() {
+     <View style={{ gap: 22 }}>
+       <AgentStatus />
+       <Field
+-        label="Search apps"
++        label="搜索应用"
+         value={query}
+         onChangeText={setQuery}
+-        placeholder="Search connectors"
++        placeholder="搜索连接"
+       />
+       <ConnectionsScreen query={query} />
+-      <Text style={s.heading}>On your computer</Text>
++      <Text style={s.heading}>你的电脑上</Text>
+       <Card style={{ paddingVertical: 3, backgroundColor: "#F4F5F6" }}>
+         {shortcuts
+           .filter((item) =>
+@@ -1810,12 +1810,12 @@ export function AppsScreen() {
+           ))}
+       </Card>
+       <Button onPress={() => setSettings(!settings)}>
+-        {settings ? "Close agent settings" : "Personality & memory"}
++        {settings ? "关闭智能体设置" : "个性与记忆"}
+       </Button>
+       {settings && (
+         <>
+           <Card style={{ gap: 10 }}>
+-            <SectionHeading title="Your agent" />
++            <SectionHeading title="你的智能体" />
+             <View style={[s.row, { gap: 16, justifyContent: "center", marginBottom: 12 }]}>
+               {(["sky", "sand", "lilac"] as const).map((item) => (
+                 <Pressable
+@@ -1834,7 +1834,7 @@ export function AppsScreen() {
+                 </Pressable>
+               ))}
+             </View>
+-            <Field label="Name" value={name} onChangeText={setName} />
++            <Field label="名称" value={name} onChangeText={setName} />
+             <View style={[s.row, { gap: 8 }]}>
+               {(["warm", "concise", "thoughtful"] as const).map((item) => (
+                 <Button key={item} small primary={tone === item} onPress={() => setTone(item)}>
+@@ -1843,13 +1843,12 @@ export function AppsScreen() {
+               ))}
+             </View>
+             <CheckRow
+-              label="Show background updates in chat"
++              label="在对话中显示后台更新"
+               checked={showChatUpdates}
+               onPress={() => setShowChatUpdates(!showChatUpdates)}
+             />
+             <Text style={s.small}>
+-              Activity and notifications always keep the full record, including requests for
+-              approval.
++              活动与通知会保留完整记录，包括待批准的请求。
+             </Text>
+             <Button
+               busy={busy}
+@@ -1858,20 +1857,20 @@ export function AppsScreen() {
+                 void save("/identity", { name: name.trim(), tone, avatar, showChatUpdates })
+               }
+             >
+-              Save preferences
++              保存偏好
+             </Button>
+           </Card>
+           <Card style={{ gap: 12 }}>
+-            <SectionHeading title="Memory" />
+-            <Text style={s.muted}>Context you can inspect, correct or forget.</Text>
++            <SectionHeading title="记忆" />
++            <Text style={s.muted}>可供查看、更正或遗忘的上下文。</Text>
+             {data?.memories.map((item) => (
+               <MemoryRow key={item.id} memory={item} />
+             ))}
+             <Field
+-              label="Remember something about me"
++              label="记住关于我的一些事"
+               value={memory}
+               onChangeText={setMemory}
+-              placeholder="I prefer morning meetings"
++              placeholder="我更喜欢上午开会"
+             />
+             <Button
+               busy={busy}
+@@ -1880,7 +1879,7 @@ export function AppsScreen() {
+                 void save("/memories", { text: memory.trim(), source: "User added in Apps" })
+               }
+             >
+-              Remember
++              记住
+             </Button>
+           </Card>
+         </>
+@@ -1912,7 +1911,7 @@ function MemoryRow({ memory }: { memory: AgentMemory }) {
+       style={{ gap: 8, paddingBottom: 16, borderBottomWidth: 1, borderBottomColor: colors.line }}
+     >
+       {editing ? (
+-        <Field label="Memory" value={text} onChangeText={setText} />
++        <Field label="记忆" value={text} onChangeText={setText} />
+       ) : (
+         <Text style={s.text}>{memory.text}</Text>
+       )}
+@@ -1922,11 +1921,11 @@ function MemoryRow({ memory }: { memory: AgentMemory }) {
+       <View style={[s.row, { gap: 8 }]}>
+         {editing ? (
+           <Button small busy={busy} disabled={!text.trim()} onPress={() => void act(false)}>
+-            Save correction
++            保存修正
+           </Button>
+         ) : (
+           <Button small onPress={() => setEditing(true)}>
+-            Edit
++            编辑
+           </Button>
+         )}
+         <Button small danger busy={busy} onPress={() => void act(true)}>
+diff --git a/apps/mobile/src/agent-workspace.tsx b/apps/mobile/src/agent-workspace.tsx
+index 9ddf2a3..62cf652 100644
+--- a/apps/mobile/src/agent-workspace.tsx
++++ b/apps/mobile/src/agent-workspace.tsx
+@@ -93,6 +93,6 @@ export function AgentWorkspaceProvider({ children }: { children: ReactNode }) {
+ }
+ export function useAgentWorkspace() {
+   const context = useContext(AgentContext);
+-  if (!context) throw new Error("Agent workspace is unavailable");
++  if (!context) throw new Error("智能体工作区不可用");
+   return context;
+ }
+diff --git a/apps/mobile/src/background-updates.tsx b/apps/mobile/src/background-updates.tsx
+index 76fb20c..595d9d4 100644
+--- a/apps/mobile/src/background-updates.tsx
++++ b/apps/mobile/src/background-updates.tsx
+@@ -30,11 +30,11 @@ export function BackgroundUpdates() {
+       <View style={[s.between, { gap: 12 }]}>
+         <View style={[s.row, { gap: 7 }]}>
+           <Bell size={14} color={colors.blueDark} />
+-          <Text style={s.small}>An update for you</Text>
++          <Text style={s.small}>有新动态</Text>
+         </View>
+         <Pressable
+           accessibilityRole="button"
+-          accessibilityLabel="Dismiss background update"
++          accessibilityLabel="忽略后台更新"
+           disabled={busy}
+           onPress={() => void dismiss()}
+           hitSlop={10}
+@@ -51,7 +51,7 @@ export function BackgroundUpdates() {
+           icon={ArrowRight}
+           onPress={() => update.taskId && open({ type: "task", taskId: update.taskId })}
+         >
+-          View task
++          查看任务
+         </Button>
+         {updates.length > 1 && (
+           <Button small onPress={() => open({ type: "notifications" })}>
+diff --git a/apps/mobile/src/browser-tool-card.tsx b/apps/mobile/src/browser-tool-card.tsx
+index c5e0f68..abbbbf8 100644
+--- a/apps/mobile/src/browser-tool-card.tsx
++++ b/apps/mobile/src/browser-tool-card.tsx
+@@ -24,11 +24,11 @@ function resultValue(result: unknown) {
+ }
+ 
+ function siteLabel(url: unknown) {
+-  if (typeof url !== "string") return "Opening a page";
++  if (typeof url !== "string") return "正在打开页面";
+   try {
+     return new URL(url).hostname.replace(/^www\./, "");
+   } catch {
+-    return "Opening a page";
++    return "正在打开页面";
+   }
+ }
+ 
+@@ -89,7 +89,7 @@ export function BrowserToolCard({
+   const failure = toolError.success
+     ? toolError.data.error
+     : !loading && !visited
+-      ? "The browser did not return a page. Try your request again."
++      ? "浏览器未返回页面，请重新提出你的请求。"
+       : "";
+   return (
+     <Card
+@@ -100,21 +100,21 @@ export function BrowserToolCard({
+           <Globe2 size={21} color={colors.blueDark} />
+         </View>
+         <View style={{ flex: 1, gap: 1 }}>
+-          <Text style={[s.text, { fontWeight: "600" }]}>Browser</Text>
++          <Text style={[s.text, { fontWeight: "600" }]}>浏览器</Text>
+           <Text numberOfLines={1} style={[s.small, { fontSize: 12 }]}>
+             {working
+-              ? "Reading the page…"
++              ? "正在读取页面…"
+               : loading
+-                ? "Browsing paused"
++                ? "浏览已暂停"
+                 : failure
+-                  ? "Couldn’t read the page"
++                  ? "无法读取该页面"
+                   : siteLabel(visited?.url)}
+           </Text>
+         </View>
+         {working ? (
+           <ActivityIndicator size="small" color={colors.blueDark} />
+         ) : visited ? (
+-          <Check size={17} color="#47896C" accessibilityLabel="Page read" />
++          <Check size={17} color="#47896C" accessibilityLabel="页面已读" />
+         ) : null}
+       </View>
+       {preview ? (
+@@ -142,14 +142,14 @@ export function BrowserToolCard({
+           ) : visited ? (
+             <Text style={s.small}>
+               {browser && browser.url !== visited.url
+-                ? "Page visited. The browser has moved on."
++                ? "已访问该页面。浏览器已继续前进。"
+                 : browser?.status === "closed"
+-                  ? "Session saved. Take control to reopen it."
++                  ? "会话已保存。接管即可重新打开。"
+                   : browser?.status === "error"
+-                    ? "Session needs attention. Take control to reconnect."
++                    ? "会话需要处理。接管即可重新连接。"
+                     : previewFailed
+-                      ? "Preview unavailable. You can still take control."
+-                      : "Connecting to the saved session…"}
++                      ? "预览不可用。你仍可接管。"
++                      : "正在连接到已保存的会话…"}
+             </Text>
+           ) : null}
+         </View>
+@@ -162,12 +162,12 @@ export function BrowserToolCard({
+           onPress={() => browser && open({ type: "browser", browser })}
+           style={{ backgroundColor: "#F9F9FA", minHeight: 38, paddingVertical: 8 }}
+         >
+-          Take control
++          接管
+         </Button>
+       )}
+       {!!error && (
+         <Button small icon={RotateCw} onPress={() => setRetry((attempt) => attempt + 1)}>
+-          Reconnect preview
++          重新连接预览
+         </Button>
+       )}
+     </Card>
+diff --git a/apps/mobile/src/chat.tsx b/apps/mobile/src/chat.tsx
+index 746ce12..bd60bf3 100644
+--- a/apps/mobile/src/chat.tsx
++++ b/apps/mobile/src/chat.tsx
+@@ -109,7 +109,7 @@ export function WorkspaceTools() {
+     description: "Display delegated work",
+     parameters: displayParameters,
+     render: ({ result, status }) => (
+-      <ServerToolCard name="Task" result={result} loading={status !== "complete"} />
++      <ServerToolCard name="任务" result={result} loading={status !== "complete"} />
+     ),
+   });
+   useRenderTool({
+@@ -117,7 +117,7 @@ export function WorkspaceTools() {
+     description: "Display saved agent progress",
+     parameters: displayParameters,
+     render: ({ result, status }) => (
+-      <ServerToolCard name="Agent progress" result={result} loading={status !== "complete"} />
++      <ServerToolCard name="智能体进度" result={result} loading={status !== "complete"} />
+     ),
+   });
+   useRenderTool({
+@@ -183,7 +183,7 @@ function ServerToolCard({
+         <ErrorNotice error={parsed.data.error} />
+       ) : (
+         <Text style={s.muted}>
+-          {loading ? "Waiting for the server." : "Open the workspace to see the saved result."}
++          {loading ? "正在等待服务器响应。" : "打开工作区查看已保存的结果。"}
+         </Text>
+       )}
+       <Button
+@@ -325,7 +325,7 @@ export function ChatScreen({
+   const run = useCallback(
+     async (message?: QueuedMessage): Promise<"held" | undefined> => {
+       if (runLock.current || agent.isRunning || !isReady || !loaded || syncing)
+-        throw new Error("The conversation is not ready yet.");
++        throw new Error("对话尚未就绪。");
+       runLock.current = true;
+       queuedTurn.current = Boolean(message);
+       setBusy(true);
+@@ -409,10 +409,10 @@ export function ChatScreen({
+     (text: string, retry = false): Promise<void> => {
+       const snapshot = queue.getSnapshot();
+       if (!loaded || !isReady || saveError || (!retry && snapshot.paused))
+-        return Promise.reject(new Error("The conversation is not ready for a choice yet."));
++        return Promise.reject(new Error("对话尚未准备好供选择。"));
+       if (retry) {
+         if (runLock.current || agent.isRunning || snapshot.running || snapshot.pending.length)
+-          return Promise.reject(new Error("Wait for the current response before retrying."));
++          return Promise.reject(new Error("请等当前回复完成后再重试。"));
+         if (snapshot.paused) queue.resume();
+       }
+       const id = `choice-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+@@ -511,7 +511,7 @@ export function ChatScreen({
+           <>
+             <ErrorNotice error={historyError} />
+             <Button onPress={() => setHistoryAttempt((attempt) => attempt + 1)}>
+-              Retry loading conversation
++              重试加载对话
+             </Button>
+           </>
+         )}
+@@ -544,14 +544,14 @@ export function ChatScreen({
+             <View style={{ width: "100%", maxWidth: 360, marginTop: 14, gap: 8 }}>
+               {[
+                 {
+-                  text: "Find cool things on Hacker News",
+-                  action: () => enqueue("Check out Hacker News for cool stuff"),
++                  text: "在 Hacker News 上找点有意思的东西",
++                  action: () => enqueue("去 Hacker News 看看有趣的东西"),
+                 },
+                 {
+-                  text: "Summarize copilotkit.ai",
+-                  action: () => enqueue("Summarize copilotkit.ai"),
++                  text: "总结 copilotkit.ai",
++                  action: () => enqueue("总结 copilotkit.ai"),
+                 },
+-                { text: "Keep an eye on a website", action: () => navigate("goals") },
++                { text: "盯住某个网站", action: () => navigate("goals") },
+               ].map((item) => (
+                 <Button key={item.text} onPress={item.action}>
+                   {item.text}
+@@ -672,7 +672,7 @@ export function ChatScreen({
+                 style={{ alignSelf: "flex-start", marginTop: 6 }}
+                 onPress={() => setShowResults(!showResults)}
+               >
+-                {showResults ? "Hide recent results" : "Recent results"}
++                {showResults ? "隐藏近期结果" : "近期结果"}
+               </Button>
+             )}
+             {showResults && (
+@@ -709,7 +709,7 @@ export function ChatScreen({
+         {(!richThreads || selection.id === mainId) && <BackgroundUpdates />}
+         {(busy || agent.isRunning) && (
+           <View
+-            accessibilityLabel="Agent is working"
++            accessibilityLabel="智能体工作中"
+             style={[
+               s.row,
+               {
+@@ -750,7 +750,7 @@ export function ChatScreen({
+                 .catch((e) => setError(e instanceof Error ? e.message : String(e)));
+             }}
+           >
+-            Retry response
++            重试响应
+           </Button>
+         )}
+       </ScrollView>
+@@ -765,7 +765,7 @@ export function ChatScreen({
+             list.current?.scrollToEnd({ animated: true });
+           }}
+         >
+-          Latest messages
++          最新消息
+         </Button>
+       )}
+       <KeyboardAvoidingView
+@@ -781,13 +781,13 @@ export function ChatScreen({
+               void saveHistory().catch((e) => setSaveError(String(e)));
+             }}
+           >
+-            Retry saving conversation
++            重试保存对话
+           </Button>
+         )}
+         {!!outbox.pending.length && (
+           <View style={{ padding: 12, gap: 6 }}>
+             <Text style={s.small}>
+-              {outbox.paused ? "Messages on hold" : "Up next"} · Keep the app open until sent
++              {outbox.paused ? "搁置的消息" : "接下来"} · Keep the app open until sent
+             </Text>
+             {outbox.pending.map((message) => (
+               <View key={message.id} style={[s.row, { gap: 8 }]}>
+@@ -802,7 +802,7 @@ export function ChatScreen({
+                     queue.remove(message.id);
+                     choiceCompletions.current
+                       .get(message.id)
+-                      ?.reject(new Error("Choice removed from queue."));
++                      ?.reject(new Error("已从队列移除该选择。"));
+                     choiceCompletions.current.delete(message.id);
+                   }}
+                   style={{ padding: 8 }}
+@@ -820,14 +820,14 @@ export function ChatScreen({
+                   flush();
+                 }}
+               >
+-                Send queued messages
++                发送排队消息
+               </Button>
+             )}
+           </View>
+         )}
+         {picking && (
+           <Card style={{ marginBottom: 12, padding: 15 }}>
+-            <Text style={s.heading}>Add a document</Text>
++            <Text style={s.heading}>添加文档</Text>
+             <ScrollView style={{ maxHeight: 230 }} keyboardShouldPersistTaps="handled">
+               {w.files.length ? (
+                 w.files.map((f) => (
+@@ -845,7 +845,7 @@ export function ChatScreen({
+                   />
+                 ))
+               ) : (
+-                <Text style={s.muted}>Import a PDF in Files to use it in a conversation.</Text>
++                <Text style={s.muted}>先在文件页导入 PDF，即可在对话中使用它。</Text>
+               )}
+             </ScrollView>
+             <Button
+@@ -908,7 +908,7 @@ export function ChatScreen({
+           <View style={[s.row, { gap: 7, alignItems: "flex-end" }]}>
+             <Pressable
+               accessibilityRole="button"
+-              accessibilityLabel="Attach a document"
++              accessibilityLabel="附加文档"
+               accessibilityState={{ expanded: picking }}
+               onPress={() => setPicking(!picking)}
+               style={({ pressed }) => ({
+@@ -925,7 +925,7 @@ export function ChatScreen({
+               </Text>
+             </Pressable>
+             <TextInput
+-              accessibilityLabel="Message OpenMuse"
++              accessibilityLabel="给 OpenMuse 发消息"
+               value={draft}
+               onChangeText={setDraft}
+               onContentSizeChange={(event) =>
+@@ -933,12 +933,12 @@ export function ChatScreen({
+               }
+               placeholder={
+                 !isReady
+-                  ? "Connecting…"
++                  ? "连接中…"
+                   : !loaded
+                     ? historyError
+-                      ? "Conversation unavailable"
+-                      : "Loading conversation…"
+-                    : "Message…"
++                      ? "对话不可用"
++                      : "正在加载对话…"
++                    : "消息…"
+               }
+               placeholderTextColor="#949B9F"
+               selectionColor={colors.blueDark}
+@@ -975,7 +975,7 @@ export function ChatScreen({
+             />
+             <Pressable
+               accessibilityRole="button"
+-              accessibilityLabel={replying ? "Stop reply" : "Send message"}
++              accessibilityLabel={replying ? "停止回复" : "发送消息"}
+               disabled={!replying && (!draft.trim() || !loaded || !isReady)}
+               onPress={replying ? () => void stop() : send}
+               style={({ pressed }) => ({
+diff --git a/apps/mobile/src/computer-drafts.tsx b/apps/mobile/src/computer-drafts.tsx
+index 0deb0b7..ec8074f 100644
+--- a/apps/mobile/src/computer-drafts.tsx
++++ b/apps/mobile/src/computer-drafts.tsx
+@@ -33,7 +33,7 @@ export function ComputerDraftProvider({ children }: { children: ReactNode }) {
+ }
+ export function useComputerDraft<K extends keyof ComputerDrafts>(key: K) {
+   const context = useContext(DraftContext);
+-  if (!context) throw new Error("Computer drafts are unavailable");
++  if (!context) throw new Error("电脑草稿功能不可用");
+   const { setDrafts } = context;
+   const set = useCallback(
+     (value: SetStateAction<ComputerDrafts[K]>) => {
+diff --git a/apps/mobile/src/computer-workspace.tsx b/apps/mobile/src/computer-workspace.tsx
+index 19a9191..4309628 100644
+--- a/apps/mobile/src/computer-workspace.tsx
++++ b/apps/mobile/src/computer-workspace.tsx
+@@ -156,17 +156,17 @@ export function LinuxWorkspace({
+         <View style={[s.row, { gap: 12 }]}>
+           <Terminal size={24} color={colors.blueDark} />
+           <View style={{ flex: 1, gap: 4 }}>
+-            <Text style={s.heading}>Your Linux workspace</Text>
++            <Text style={s.heading}>你的 Linux 工作区</Text>
+             <Text style={s.muted}>
+               {running
+-                ? "Running · files persist when stopped"
++                ? "运行中 · 停止后文件依然保留"
+                 : snapshot?.status === "stopped"
+-                  ? "Stopped · your files are saved"
++                  ? "已停止 · 文件已保存"
+                   : snapshot?.status === "unconfigured"
+-                    ? "Set up the computer to get started"
++                    ? "完成电脑设置即可开始"
+                     : snapshot?.status === "error"
+-                      ? "Connection needs attention"
+-                      : "Connecting…"}
++                      ? "连接需要处理"
++                      : "连接中…"}
+             </Text>
+           </View>
+           {!snapshot && !error && <ActivityIndicator color={colors.blueDark} />}
+@@ -176,11 +176,11 @@ export function LinuxWorkspace({
+           <View style={[s.row, { gap: 8, flexWrap: "wrap" }]}>
+             {running ? (
+               <Button icon={Power} busy={busy} onPress={() => void control("stop")}>
+-                Stop computer
++                停止电脑
+               </Button>
+             ) : (
+               <Button primary icon={Play} busy={busy} onPress={() => void control("start")}>
+-                Start computer
++                启动电脑
+               </Button>
+             )}
+             <Button
+@@ -206,7 +206,7 @@ export function LinuxWorkspace({
+               .catch((e) => setError(message(e)))
+           }
+         >
+-          Retry connection
++          重试连接
+         </Button>
+       )}
+       {snapshot?.enabled && (
+@@ -215,10 +215,10 @@ export function LinuxWorkspace({
+             {editingCommand || command.length > 0 || snapshot.commands.length === 0 ? (
+               <View style={{ borderRadius: 22, backgroundColor: "#F1F3F4", padding: 18, gap: 8 }}>
+                 <Text style={{ color: colors.muted, fontSize: 12, fontFamily: mono }}>
+-                  TERMINAL
++                  终端
+                 </Text>
+                 <Field
+-                  label="Working directory"
++                  label="工作目录"
+                   value={cwd}
+                   onChangeText={setCwd}
+                   autoCapitalize="none"
+@@ -226,7 +226,7 @@ export function LinuxWorkspace({
+                   style={{ fontFamily: mono }}
+                 />
+                 <Field
+-                  label="Command"
++                  label="命令"
+                   value={command}
+                   onChangeText={setCommand}
+                   placeholder="pwd"
+@@ -246,7 +246,7 @@ export function LinuxWorkspace({
+                       setCommand((text) => text.replace(/[‘’]/g, "'").replace(/[“”]/g, '"'))
+                     }
+                   >
+-                    Use straight quotes
++                    使用直引号
+                   </Button>
+                 )}
+                 <Button
+@@ -256,12 +256,12 @@ export function LinuxWorkspace({
+                   disabled={!running || !command.trim() || busy}
+                   onPress={() => void run()}
+                 >
+-                  Run command
++                  运行命令
+                 </Button>
+                 <Text style={{ color: colors.muted, fontSize: 12, lineHeight: 18 }}>
+                   {snapshot.network === "enabled"
+-                    ? "Runs on your computer with internet access. Start GUI apps with >/dev/null 2>&1 & to open them on the Desktop tab."
+-                    : "Runs on your computer. Network access is off. Use Browser for the web."}
++                    ? "在你的电脑上运行，并可访问互联网。使用 >/dev/null 2>&1 & 启动 GUI 应用，即可在桌面标签页中打开。"
++                    : "在你的电脑上运行。网络访问已关闭。浏览网页请使用浏览器。"}
+                 </Text>
+               </View>
+             ) : (
+@@ -271,7 +271,7 @@ export function LinuxWorkspace({
+                 disabled={!running || busy || !!commandRunning}
+                 onPress={() => setEditingCommand(true)}
+               >
+-                New command
++                新建命令
+               </Button>
+             )}
+             {!!commandRunning && (
+@@ -282,8 +282,8 @@ export function LinuxWorkspace({
+             {snapshot.commands.length === 0 ? (
+               <Empty
+                 icon={Terminal}
+-                title="Ready for your first command"
+-                detail="Run scripts, work with files, or ask your agent to create something here."
++                title="已就绪，等待你的第一条命令"
++                detail="在这里运行脚本、处理文件，或让你的智能体创作点什么。"
+               />
+             ) : (
+               [...snapshot.commands]
+@@ -293,7 +293,7 @@ export function LinuxWorkspace({
+             )}
+             {snapshot.commands.length > 5 && (
+               <Button small onPress={() => setShowHistory(!showHistory)}>
+-                {showHistory ? "Show recent commands" : "Earlier commands"}
++                {showHistory ? "显示最近的命令" : "更早的命令"}
+               </Button>
+             )}
+           </View>
+@@ -315,8 +315,8 @@ function ComputerDesktop({ running }: { running: boolean }) {
+     return (
+       <Empty
+         icon={Monitor}
+-        title="Desktop is off"
+-        detail="Start the computer to see and control its desktop."
++        title="桌面已关闭"
++        detail="启动电脑，即可查看并控制其桌面。"
+       />
+     );
+   return (
+@@ -379,7 +379,7 @@ function CommandReceipt({ run }: { run: ComputerCommand }) {
+             </Text>
+           )}
+           {!run.stdout && !run.stderr && run.status !== "running" && (
+-            <Text style={s.small}>No output</Text>
++            <Text style={s.small}>无输出</Text>
+           )}
+           {run.truncated && (
+             <Text style={s.small}>
+@@ -390,7 +390,7 @@ function CommandReceipt({ run }: { run: ComputerCommand }) {
+       )}
+       {!!(run.stdout || run.stderr) && (
+         <Button small onPress={() => setExpanded(!expanded)}>
+-          {expanded ? "Hide output" : "Show output"}
++          {expanded ? "隐藏输出" : "显示输出"}
+         </Button>
+       )}
+     </Card>
+@@ -469,7 +469,7 @@ function ComputerFiles({ running, active }: { running: boolean; active: boolean
+         path: `${path}/${file.name.replace(/[\\/]/g, "_")}`,
+       });
+       setImporting(false);
+-      setNotice("Document copied to your computer.");
++      setNotice("文档已复制到你的电脑。");
+       setRetry((value) => value + 1);
+     } catch (e) {
+       setError(message(e));
+@@ -505,7 +505,7 @@ function ComputerFiles({ running, active }: { running: boolean; active: boolean
+             ? { ...current, saved: sent.text, savedPath: sent.path }
+             : current,
+         );
+-      setNotice("File saved to your computer.");
++      setNotice("文件已保存到你的电脑。");
+       setRetry((value) => value + 1);
+     } catch (e) {
+       setError(message(e));
+@@ -530,7 +530,7 @@ function ComputerFiles({ running, active }: { running: boolean; active: boolean
+   return (
+     <View style={{ gap: 12 }}>
+       <View style={s.between}>
+-        <Text style={s.heading}>Workspace files</Text>
++        <Text style={s.heading}>工作区文件</Text>
+         {(busy || loading) && <ActivityIndicator color={colors.blueDark} />}
+       </View>
+       <Text selectable style={[s.small, { fontFamily: mono }]}>
+@@ -539,12 +539,12 @@ function ComputerFiles({ running, active }: { running: boolean; active: boolean
+       <ErrorNotice error={error} />
+       {!!notice && <Text style={[s.small, { color: "#248258" }]}>{notice}</Text>}
+       {!running && (
+-        <Text style={s.muted}>Start the computer to browse or edit its saved files.</Text>
++        <Text style={s.muted}>启动电脑，以浏览或编辑其中已保存的文件。</Text>
+       )}
+       {editor ? (
+         <>
+           <Field
+-            label="File path"
++            label="文件路径"
+             value={editor.path}
+             onChangeText={(value) => setEditor({ ...editor, path: value })}
+             autoCorrect={false}
+@@ -552,7 +552,7 @@ function ComputerFiles({ running, active }: { running: boolean; active: boolean
+             style={{ fontFamily: mono }}
+           />
+           <Field
+-            label="File contents"
++            label="文件内容"
+             value={editor.text}
+             onChangeText={(value) => setEditor({ ...editor, text: value })}
+             multiline
+@@ -571,7 +571,7 @@ function ComputerFiles({ running, active }: { running: boolean; active: boolean
+               disabled={!running || !editor.path.trim()}
+               onPress={() => void save()}
+             >
+-              Save file
++              保存文件
+             </Button>
+             <Button
+               disabled={busy}
+@@ -581,7 +581,7 @@ function ComputerFiles({ running, active }: { running: boolean; active: boolean
+                 setNotice("");
+               }}
+             >
+-              {dirty ? "Discard edits" : "Back to files"}
++              {dirty ? "放弃编辑" : "返回文件"}
+             </Button>
+           </View>
+         </>
+@@ -612,7 +612,7 @@ function ComputerFiles({ running, active }: { running: boolean; active: boolean
+                 });
+               }}
+             >
+-              New file
++              新建文件
+             </Button>
+             <Button
+               small
+@@ -620,7 +620,7 @@ function ComputerFiles({ running, active }: { running: boolean; active: boolean
+               icon={FolderPlus}
+               onPress={() => setFolder("")}
+             >
+-              New folder
++              新建文件夹
+             </Button>
+             <Button
+               small
+@@ -628,7 +628,7 @@ function ComputerFiles({ running, active }: { running: boolean; active: boolean
+               icon={RefreshCw}
+               onPress={() => setRetry(retry + 1)}
+             >
+-              Refresh files
++              刷新文件
+             </Button>
+             <Button
+               small
+@@ -636,12 +636,12 @@ function ComputerFiles({ running, active }: { running: boolean; active: boolean
+               icon={Upload}
+               onPress={() => setImporting(!importing)}
+             >
+-              {importing ? "Hide documents" : "Copy a document here"}
++              {importing ? "隐藏文档" : "将文档复制到此处"}
+             </Button>
+           </View>
+           {importing && (
+             <Card>
+-              <Text style={s.heading}>Choose a saved PDF</Text>
++              <Text style={s.heading}>选择已保存的 PDF</Text>
+               <Text style={[s.small, { marginTop: 6 }]}>
+                 Copies into this folder. A file with the same name will be replaced.
+               </Text>
+@@ -654,14 +654,14 @@ function ComputerFiles({ running, active }: { running: boolean; active: boolean
+                 />
+               ))}
+               {!workspace.files.length && (
+-                <Text style={s.muted}>Add a document from mail or Files first.</Text>
++                <Text style={s.muted}>请先从邮件或文件中添加文档。</Text>
+               )}
+             </Card>
+           )}
+           {folder !== undefined && (
+             <Card style={{ gap: 8 }}>
+               <Field
+-                label="Folder name"
++                label="文件夹名称"
+                 value={folder}
+                 onChangeText={setFolder}
+                 autoCapitalize="none"
+@@ -674,7 +674,7 @@ function ComputerFiles({ running, active }: { running: boolean; active: boolean
+                   busy={busy}
+                   onPress={() => void mkdir()}
+                 >
+-                  Create folder
++                  创建文件夹
+                 </Button>
+                 <Button disabled={busy} onPress={() => setFolder(undefined)}>
+                   Cancel
+@@ -691,9 +691,9 @@ function ComputerFiles({ running, active }: { running: boolean; active: boolean
+                 title={entry.name}
+                 detail={
+                   entry.type === "directory"
+-                    ? "Folder"
++                    ? "文件夹"
+                     : entry.type === "symlink"
+-                      ? "Symbolic link"
++                      ? "符号链接"
+                       : `${Math.max(1, Math.ceil(entry.size / 1024))} KB`
+                 }
+                 onPress={() => {
+@@ -714,8 +714,8 @@ function ComputerFiles({ running, active }: { running: boolean; active: boolean
+             directory.entries.length === 0 && (
+               <Empty
+                 icon={Folder}
+-                title="A little space to create"
+-                detail="Add a file here, or ask your agent to make one in its workspace."
++                title="一小片创作空间"
++                detail="在此添加文件，或让智能体在其工作区中新建一个。"
+               />
+             )}
+         </>
+diff --git a/apps/mobile/src/computer.tsx b/apps/mobile/src/computer.tsx
+index 285e051..93f7bae 100644
+--- a/apps/mobile/src/computer.tsx
++++ b/apps/mobile/src/computer.tsx
+@@ -73,9 +73,9 @@ export function BrowserThreadCard({ browser }: { browser: BrowserSession }) {
+           <Text style={[s.text, { fontWeight: "600" }]}>Browser</Text>
+           <Text numberOfLines={1} style={s.small}>
+             {browser.status === "closed"
+-              ? "Session saved"
++              ? "会话已保存"
+               : browser.status === "error"
+-                ? "Needs attention"
++                ? "需要处理"
+                 : browser.title}
+           </Text>
+         </View>
+@@ -100,16 +100,16 @@ export function BrowserThreadCard({ browser }: { browser: BrowserSession }) {
+         >
+           <Globe2 size={30} color={colors.muted} />
+           <Text numberOfLines={2} style={[s.muted, { textAlign: "center" }]}>
+-            {failed ? "Preview unavailable. Open the browser to reconnect." : browser.url}
++            {failed ? "预览不可用。打开浏览器以重新连接。" : browser.url}
+           </Text>
+         </View>
+       )}
+       <Button onPress={() => open({ type: "browser", browser })}>
+         {browser.status === "closed"
+-          ? "Reopen browser"
++          ? "重新打开浏览器"
+           : browser.status === "error"
+-            ? "Reconnect browser"
+-            : "Take control"}
++            ? "重新连接浏览器"
++            : "接管"}
+       </Button>
+     </Card>
+   );
+@@ -168,8 +168,8 @@ export function ComputerSheet() {
+   }
+   return (
+     <Sheet
+-      title="Agent computer"
+-      subtitle="Your agent works here. Step in whenever you need."
++      title="智能体电脑"
++      subtitle="你的智能体在此工作。需要时随时接管。"
+       onClose={close}
+     >
+       <View style={{ gap: 20 }}>
+@@ -179,11 +179,11 @@ export function ComputerSheet() {
+           >
+             <Monitor size={28} color={colors.blueDark} />
+             <View style={{ flex: 1 }}>
+-              <Text style={s.heading}>{available ? "Browser connected" : "Browser offline"}</Text>
++              <Text style={s.heading}>{available ? "浏览器已连接" : "浏览器离线"}</Text>
+               <Text style={s.muted}>
+                 {available
+-                  ? "Your agent’s browser and documents, in one place."
+-                  : "Start the browser worker to connect this computer."}
++                  ? "你智能体的浏览器与文档，尽在一处。"
++                  : "启动浏览器执行器以连接这台电脑。"}
+               </Text>
+             </View>
+           </View>
+@@ -196,7 +196,7 @@ export function ComputerSheet() {
+               icon={tabIcons[item]}
+               onPress={() => setTab(item)}
+             >
+-              {item}
++              {({ Browser: "浏览器", Desktop: "桌面", Terminal: "终端", Files: "文件" } as Record<string, string>)[item]}
+             </Button>
+           ))}
+         </View>
+@@ -208,7 +208,7 @@ export function ComputerSheet() {
+           <>
+             <View>
+               <Field
+-                label="Website address"
++                label="网站地址"
+                 value={url}
+                 onChangeText={setUrl}
+                 placeholder="https://example.com"
+@@ -223,7 +223,7 @@ export function ComputerSheet() {
+                 disabled={!available || !url.trim()}
+                 onPress={() => void create()}
+               >
+-                Open a browser session
++                打开浏览器会话
+               </Button>
+             </View>
+             {[...workspace.browsers]
+@@ -233,19 +233,17 @@ export function ComputerSheet() {
+               ))}
+             {!workspace.browsers.length && (
+               <Text style={s.muted}>
+-                Open a page here or ask your agent to research something. Its browsing sessions will
+-                appear here.
++                在这里打开页面，或让你的智能体帮你查东西。它的浏览会话会显示在这里。
+               </Text>
+             )}
+             <Text style={s.small}>
+-              Browsing sessions keep their own logins and downloads. Open one to take over, then
+-              return to your conversation.
++              浏览会话会保留各自的登录状态和下载文件。打开一个即可接管，然后回到你的对话。
+             </Text>
+           </>
+         ) : tab === "Files" ? (
+           <>
+-            <Text style={s.heading}>Documents</Text>
+-            <Text style={s.small}>PDFs saved from mail, browser downloads, and your uploads.</Text>
++            <Text style={s.heading}>文档</Text>
++            <Text style={s.small}>保存自邮件、浏览器下载及你上传的 PDF。</Text>
+             {workspace.files.map((file) => (
+               <LinkRow
+                 key={file.id}
+@@ -262,7 +260,7 @@ export function ComputerSheet() {
+                 navigate("files");
+               }}
+             >
+-              Import a document
++              导入文档
+             </Button>
+           </>
+         ) : null}
+@@ -275,7 +273,7 @@ export function ComputerSheet() {
+               .catch((e) => setError(String(e)))
+           }
+         >
+-          Refresh computer
++          刷新电脑
+         </Button>
+       </View>
+     </Sheet>
+diff --git a/apps/mobile/src/date-time.ts b/apps/mobile/src/date-time.ts
+index a1844f1..ad16848 100644
+--- a/apps/mobile/src/date-time.ts
++++ b/apps/mobile/src/date-time.ts
+@@ -5,13 +5,13 @@ export { localDateTime };
+ /** Resolve a local wall-clock time, rejecting gaps at daylight-saving transitions. */
+ export function zonedInstant(date: string, time: string, timeZone: string): string {
+   if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{2}:\d{2}$/.test(time))
+-    throw new Error("Enter a complete date and time.");
++    throw new Error("请输入完整日期和时间。");
+   const desired = Date.parse(`${date}T${time}:00Z`);
+   if (
+     !Number.isFinite(desired) ||
+     new Date(desired).toISOString().slice(0, 16) !== `${date}T${time}`
+   )
+-    throw new Error("Choose a valid date and time.");
++    throw new Error("请选择有效的日期和时间。");
+   let candidate = desired;
+   for (let pass = 0; pass < 4; pass++) {
+     const local = localDateTime(new Date(candidate).toISOString(), timeZone);
+@@ -43,7 +43,7 @@ export function startOfZonedDay(date: string, timeZone: string): string {
+       // Still inside the gap; keep walking toward the first existing time.
+     }
+   }
+-  throw new Error("This day has no existing local time in the selected time zone.");
++  throw new Error("所选时区在这一天没有可用的本地时间。");
+ }
+ 
+ /** Only fully serialized instants may reset a date editor's local text. */
+diff --git a/apps/mobile/src/desktop-stream.tsx b/apps/mobile/src/desktop-stream.tsx
+index 4906d25..7a7f098 100644
+--- a/apps/mobile/src/desktop-stream.tsx
++++ b/apps/mobile/src/desktop-stream.tsx
+@@ -94,7 +94,7 @@ export const DesktopStream = memo(function DesktopStream({
+       <ErrorNotice error={error} />
+       {embedded && !url && !error && <ActivityIndicator color={colors.blueDark} />}
+       {!!url && embed && Platform.OS === "web" && (
+-        <BrowserConsole url={url} title="Computer desktop" sandboxed />
++        <BrowserConsole url={url} title="电脑桌面" sandboxed />
+       )}
+       {running && (!embedded || !!url) && (
+         <Button
+@@ -103,7 +103,7 @@ export const DesktopStream = memo(function DesktopStream({
+           disabled={opening}
+           onPress={() => void open()}
+         >
+-          {opening ? "Opening…" : "Open desktop"}
++          {opening ? "正在打开…" : "打开桌面"}
+         </Button>
+       )}
+     </View>
+diff --git a/apps/mobile/src/desktop-tool-card.tsx b/apps/mobile/src/desktop-tool-card.tsx
+index cce31a1..2c9737d 100644
+--- a/apps/mobile/src/desktop-tool-card.tsx
++++ b/apps/mobile/src/desktop-tool-card.tsx
+@@ -97,13 +97,13 @@ export function DesktopToolCard({
+           <Monitor size={21} color={colors.blueDark} />
+         </View>
+         <View style={{ flex: 1, gap: 1 }}>
+-          <Text style={[s.text, { fontWeight: "600" }]}>Desktop</Text>
++          <Text style={[s.text, { fontWeight: "600" }]}>桌面</Text>
+           <Text numberOfLines={1} style={[s.small, { fontSize: 12 }]}>
+             {loading
+-              ? "Using the desktop…"
++              ? "正在使用桌面…"
+               : value?.error
+-                ? "The desktop step failed"
+-                : (value?.action ?? "Desktop step")}
++                ? "桌面操作失败"
++                : (value?.action ?? "桌面操作")}
+           </Text>
+         </View>
+         {loading && <ActivityIndicator size="small" color={colors.blueDark} />}
+@@ -112,10 +112,10 @@ export function DesktopToolCard({
+       {latest && snapshot && !running ? (
+         <View style={{ backgroundColor: "#FAFAFB", borderRadius: 12, padding: 16, gap: 10 }}>
+           <Text style={s.small}>
+-            The computer is offline. Start it to see the desktop; apps that were open are closed.
++            电脑已离线。启动后即可查看桌面；此前打开的应用都已关闭。
+           </Text>
+           <Button small icon={Play} disabled={starting} onPress={() => void start()}>
+-            {starting ? "Starting…" : "Start computer"}
++            {starting ? "正在启动…" : "启动电脑"}
+           </Button>
+         </View>
+       ) : latest && running ? (
+@@ -125,7 +125,7 @@ export function DesktopToolCard({
+           <>
+             {!!value?.receiptId && (
+               <Image
+-                accessibilityLabel="Latest desktop screenshot"
++                accessibilityLabel="最新桌面截图"
+                 source={{
+                   uri: api.url(`/api/computer/desktop/screenshot?receipt=${value.receiptId}`),
+                   headers: { Authorization: `Bearer ${api.token}` },
+@@ -146,7 +146,7 @@ export function DesktopToolCard({
+           open({ type: "computer" });
+         }}
+       >
+-        Open in Desktop tab
++        在桌面标签页打开
+       </Button>
+     </Card>
+   );
+diff --git a/apps/mobile/src/details.tsx b/apps/mobile/src/details.tsx
+index 8751ff9..ec4091f 100644
+--- a/apps/mobile/src/details.tsx
++++ b/apps/mobile/src/details.tsx
+@@ -78,14 +78,14 @@ export function Details({ detail }: { detail: Detail }) {
+   if (detail.type === "review") return <ReviewDetail initial={detail.action} />;
+   if (detail.type === "browser") return <BrowserDetail initial={detail.browser} />;
+   return (
+-    <Sheet title="Your workspace" subtitle="A little room for everything." onClose={close}>
++    <Sheet title="你的工作区" subtitle="为一切留一点空间" onClose={close}>
+       {[
+-        { section: "mail" as const, title: "Mail", icon: MailIcon },
+-        { section: "calendar" as const, title: "Calendar", icon: CalendarDays },
++        { section: "mail" as const, title: "邮件", icon: MailIcon },
++        { section: "calendar" as const, title: "日历", icon: CalendarDays },
+         { section: "browser" as const, title: "Browser", icon: Globe2 },
+         { section: "files" as const, title: "Files", icon: FileText },
+-        { section: "activity" as const, title: "Activity", icon: Clock3 },
+-        { section: "connections" as const, title: "Connections", icon: ShieldCheck },
++        { section: "activity" as const, title: "动态", icon: Clock3 },
++        { section: "connections" as const, title: "连接", icon: ShieldCheck },
+       ].map((item) => (
+         <LinkRow
+           key={item.section}
+@@ -148,7 +148,7 @@ function MailDetail({ mail: m }: { mail: Mail }) {
+       {loading && (
+         <View style={[s.row, { gap: 10, paddingBottom: 20 }]}>
+           <ActivityIndicator color={colors.blueDark} />
+-          <Text style={s.muted}>Loading the conversation…</Text>
++          <Text style={s.muted}>正在加载对话…</Text>
+         </View>
+       )}
+       {thread.map((message) => (
+@@ -191,7 +191,7 @@ function MailDetail({ mail: m }: { mail: Mail }) {
+         </Card>
+       ))}
+       <ErrorNotice error={error} />
+-      {!!error && <Button onPress={() => setRetry(retry + 1)}>Reload conversation</Button>}
++      {!!error && <Button onPress={() => setRetry(retry + 1)}>重新加载对话</Button>}
+       <Button
+         primary
+         icon={Reply}
+@@ -212,7 +212,7 @@ function MailDetail({ mail: m }: { mail: Mail }) {
+           })
+         }
+       >
+-        Write a reply
++        写回复
+       </Button>
+     </Sheet>
+   );
+@@ -264,7 +264,7 @@ function EmailEditor({ draft }: { draft?: Partial<EmailDraft> & { id?: string }
+           ...(draft?.id ? { id: draft.id } : {}),
+         });
+         await refresh();
+-        notify("Draft saved in OpenMuse.");
++        notify("草稿已保存在 OpenMuse。");
+         close();
+       }
+     } catch (e) {
+@@ -275,12 +275,12 @@ function EmailEditor({ draft }: { draft?: Partial<EmailDraft> & { id?: string }
+   }
+   return (
+     <Sheet
+-      title={draft?.threadId ? "Write a reply" : "A new message"}
++      title={draft?.threadId ? "写回复" : "新消息"}
+       subtitle={`From ${w.profile.email} · saved privately in OpenMuse`}
+       onClose={close}
+     >
+       <Field
+-        label="To"
++        label="收件人"
+         value={to}
+         onChangeText={setTo}
+         placeholder="person@example.com"
+@@ -290,40 +290,40 @@ function EmailEditor({ draft }: { draft?: Partial<EmailDraft> & { id?: string }
+       <View style={{ flexDirection: "row", gap: 16 }}>
+         <View style={{ flex: 1 }}>
+           <Field
+-            label="Cc"
++            label="抄送"
+             value={cc}
+             onChangeText={setCc}
+-            placeholder="Optional"
++            placeholder="可选"
+             autoCapitalize="none"
+           />
+         </View>
+         <View style={{ flex: 1 }}>
+           <Field
+-            label="Bcc"
++            label="密送"
+             value={bcc}
+             onChangeText={setBcc}
+-            placeholder="Optional"
++            placeholder="可选"
+             autoCapitalize="none"
+           />
+         </View>
+       </View>
+       <Field
+-        label="Subject"
++        label="主题"
+         value={subject}
+         onChangeText={setSubject}
+-        placeholder="What’s on your mind?"
++        placeholder="你在想些什么？"
+       />
+       <Field
+-        label="Message"
++        label="消息"
+         value={body}
+         onChangeText={setBody}
+         multiline
+-        placeholder="Start your message…"
++        placeholder="开始写消息…"
+         style={{ minHeight: 210 }}
+       />
+       {w.files.length > 0 && (
+         <Card style={{ padding: 16, marginBottom: 18 }}>
+-          <Text style={[s.heading, { fontSize: 13, marginBottom: 5 }]}>Attachments</Text>
++          <Text style={[s.heading, { fontSize: 13, marginBottom: 5 }]}>附件</Text>
+           {w.files.map((f) => (
+             <CheckRow
+               key={f.id}
+@@ -349,7 +349,7 @@ function EmailEditor({ draft }: { draft?: Partial<EmailDraft> & { id?: string }
+           disabled={!!busy}
+           onPress={() => void save(true)}
+         >
+-          Review email
++          审核邮件
+         </Button>
+         <Button
+           icon={Save}
+@@ -357,7 +357,7 @@ function EmailEditor({ draft }: { draft?: Partial<EmailDraft> & { id?: string }
+           disabled={!!busy}
+           onPress={() => void save(false)}
+         >
+-          Save draft
++          保存草稿
+         </Button>
+       </View>
+       <Text style={[s.small, { marginTop: 13 }]}>
+@@ -444,20 +444,20 @@ function EventEditor({
+   }
+   return (
+     <Sheet
+-      title={e ? "Make a little time" : "Something to look forward to"}
++      title={e ? "腾出一点时间" : "有所期待"}
+       subtitle={
+-        e ? "Edit this event, then review your changes." : "Create an event in your calendar."
++        e ? "编辑这项活动，然后确认修改。" : "在你的日历中新建一项活动。"
+       }
+       onClose={close}
+     >
+       <Field
+-        label="Event title"
++        label="活动标题"
+         value={title}
+         onChangeText={setTitle}
+-        placeholder="What are you making time for?"
++        placeholder="你要为什么留出时间？"
+       />
+       <CheckRow
+-        label="All-day event"
++        label="全天活动"
+         checked={allDay}
+         onPress={() => {
+           try {
+@@ -479,46 +479,46 @@ function EventEditor({
+         }}
+       />
+       <DateTimeEditor
+-        label="Starts"
++        label="开始"
+         value={start}
+         onChange={setStart}
+         timeZone={zone}
+         allDay={allDay}
+       />
+-      <DateTimeEditor label="Ends" value={end} onChange={setEnd} timeZone={zone} allDay={allDay} />
++      <DateTimeEditor label="结束" value={end} onChange={setEnd} timeZone={zone} allDay={allDay} />
+       {allDay && (
+         <Text style={[s.small, { marginBottom: 15 }]}>
+-          The end date is the day after the last day of your event.
++          结束日期是活动最后一天的次日。
+         </Text>
+       )}
+       <Field
+-        label="Time zone"
++        label="时区"
+         value={zone}
+         onChangeText={setZone}
+         placeholder="America/Los_Angeles"
+       />
+       <Field
+-        label="Location or meeting link"
++        label="地点或会议链接"
+         value={location}
+         onChangeText={setLocation}
+-        placeholder="Optional"
++        placeholder="可选"
+       />
+       <Field
+-        label="Attendees"
++        label="参与者"
+         value={attendees}
+         onChangeText={setAttendees}
+-        placeholder="Email addresses, separated by commas"
++        placeholder="邮箱地址（以逗号分隔）"
+       />
+       <Field
+-        label="Notes"
++        label="备注"
+         value={description}
+         onChangeText={setDescription}
+         multiline
+-        placeholder="Anything else to keep in mind?"
++        placeholder="还有其他注意事项吗？"
+       />
+       {!!conflicts.length && (
+         <Card style={{ backgroundColor: colors.orange, padding: 16, marginBottom: 16 }}>
+-          <Text style={s.heading}>This time overlaps</Text>
++          <Text style={s.heading}>时间有冲突</Text>
+           {conflicts.map((c) => (
+             <Text key={c.id} style={s.muted}>
+               {c.title} · {timeLabel(c.start, c.timeZone)}–{timeLabel(c.end, c.timeZone)}
+@@ -533,7 +533,7 @@ function EventEditor({
+         </Button>
+         {e && (
+           <Button icon={Trash2} disabled={busy} danger onPress={() => void propose(true)}>
+-            Review deletion
++            确认删除
+           </Button>
+         )}
+       </View>
+@@ -577,7 +577,7 @@ function ReviewDetail({ initial }: { initial: ActionProposal }) {
+         if (action.kind === "calendar.update") {
+           const eventId = action.data.eventId;
+           if (typeof eventId !== "string" || !eventId)
+-            throw new Error("The event reference is missing. Open the event in Calendar again.");
++            throw new Error("找不到该活动，请在日历中重新打开它。");
+           next = { type: "event", event: { ...draft, id: eventId } };
+         } else next = { type: "event", draft };
+       }
+@@ -596,11 +596,11 @@ function ReviewDetail({ initial }: { initial: ActionProposal }) {
+   const email = action.kind === "email.send";
+   return (
+     <Sheet
+-      title={pending ? "One last look" : action.title}
++      title={pending ? "最后确认" : action.title}
+       subtitle={
+         w.mode === "sample"
+-          ? "This action stays in your local workspace."
+-          : "Review this exact action before it changes your connected account."
++          ? "这项操作只会留在你的本地工作区。"
++          : "在这项操作影响你已连接的账号前，请仔细核对。"
+       }
+       onClose={close}
+     >
+@@ -617,19 +617,19 @@ function ReviewDetail({ initial }: { initial: ActionProposal }) {
+         </Chip>
+       </View>
+       <Card style={{ gap: 13 }}>
+-        <ReviewLine label="Account" value={action.account || w.profile.email} />
++        <ReviewLine label="账号" value={action.account || w.profile.email} />
+         {email ? (
+           <>
+-            <ReviewLine label="To" value={arrayText(d.to)} />
+-            <ReviewLine label="Cc" value={arrayText(d.cc) || "None"} />
+-            <ReviewLine label="Bcc" value={arrayText(d.bcc) || "None"} />
+-            <ReviewLine label="Subject" value={String(d.subject || "")} />
++            <ReviewLine label="收件人" value={arrayText(d.to)} />
++            <ReviewLine label="抄送" value={arrayText(d.cc) || "无"} />
++            <ReviewLine label="密送" value={arrayText(d.bcc) || "无"} />
++            <ReviewLine label="主题" value={String(d.subject || "")} />
+             <View style={s.divider} />
+             <Text selectable style={[s.text, { lineHeight: 25 }]}>
+               {String(d.body || "")}
+             </Text>
+             <View style={s.divider} />
+-            <Text style={s.label}>Attachments</Text>
++            <Text style={s.label}>附件</Text>
+             {Array.isArray(d.attachmentIds) && d.attachmentIds.length ? (
+               d.attachmentIds.map((id) => {
+                 const file = w.files.find((f) => f.id === id);
+@@ -640,16 +640,16 @@ function ReviewDetail({ initial }: { initial: ActionProposal }) {
+                 );
+               })
+             ) : (
+-              <Text style={s.muted}>No attachments</Text>
++              <Text style={s.muted}>无附件</Text>
+             )}
+           </>
+         ) : (
+           <>
+-            <ReviewLine label="Event" value={String(d.title || "")} />
++            <ReviewLine label="活动" value={String(d.title || "")} />
+             {action.kind !== "calendar.delete" && (
+               <>
+                 <ReviewLine
+-                  label="Starts"
++                  label="开始"
+                   value={
+                     d.allDay
+                       ? String(d.start || "")
+@@ -657,25 +657,25 @@ function ReviewDetail({ initial }: { initial: ActionProposal }) {
+                   }
+                 />
+                 <ReviewLine
+-                  label="Ends"
++                  label="结束"
+                   value={
+                     d.allDay
+-                      ? `${String(d.end || "")} (exclusive)`
++                      ? `${String(d.end || "")}（结束日不计入）`
+                       : `${dateLabel(String(d.end || ""), { year: "numeric", month: "short", day: "numeric", timeZone: String(d.timeZone || "UTC") })} · ${timeLabel(String(d.end || ""), String(d.timeZone || "UTC"))}`
+                   }
+                 />
+-                <ReviewLine label="Time zone" value={String(d.timeZone || "")} />
+-                <ReviewLine label="All day" value={d.allDay ? "Yes" : "No"} />
+-                <ReviewLine label="Location" value={String(d.location || "None")} />
+-                <ReviewLine label="Attendees" value={arrayText(d.attendees) || "Just you"} />
+-                <ReviewLine label="Notes" value={String(d.description || "None")} />
++                <ReviewLine label="时区" value={String(d.timeZone || "")} />
++                <ReviewLine label="全天" value={d.allDay ? "是" : "否"} />
++                <ReviewLine label="地点" value={String(d.location || "无")} />
++                <ReviewLine label="参与者" value={arrayText(d.attendees) || "只有你"} />
++                <ReviewLine label="备注" value={String(d.description || "无")} />
+               </>
+             )}
+-            <ReviewLine label="Calendar" value={String(d.calendarId || "primary")} />
++            <ReviewLine label="日历" value={String(d.calendarId || "primary")} />
+             <Text style={s.small}>
+               {action.kind === "calendar.delete"
+-                ? "This removes the event and may notify its attendees."
+-                : "Attendees may receive an invitation or update from your connected calendar."}
++                ? "这会删除该活动，并可能通知参与者。"
++                : "参与者可能会收到你已连接日历发出的邀请或更新。"}
+             </Text>
+           </>
+         )}
+@@ -705,14 +705,14 @@ function ReviewDetail({ initial }: { initial: ActionProposal }) {
+           <View style={[s.row, { gap: 10, flexWrap: "wrap" }]}>
+             <Button primary icon={Check} busy={busy} onPress={() => void decide("approve")}>
+               {w.mode === "sample"
+-                ? "Approve locally"
++                ? "本地批准"
+                 : email
+-                  ? "Approve & send"
+-                  : "Approve change"}
++                  ? "批准并发送"
++                  : "批准更改"}
+             </Button>
+             {action.kind !== "calendar.delete" && (
+               <Button icon={Edit3} disabled={busy} onPress={() => void edit()}>
+-                Edit details
++                编辑详情
+               </Button>
+             )}
+             <Button icon={X} disabled={busy} onPress={() => void decide("deny")}>
+@@ -782,7 +782,7 @@ function FileDetail({ file: f }: { file: Artifact }) {
+       });
+       if (await Sharing.isAvailableAsync())
+         await Sharing.shareAsync(target, { mimeType: "application/pdf", UTI: "com.adobe.pdf" });
+-      else throw new Error("Sharing is not available on this device.");
++      else throw new Error("这台设备无法分享。");
+     } catch (e) {
+       setError(e instanceof Error ? e.message : String(e));
+     }
+@@ -797,18 +797,18 @@ function FileDetail({ file: f }: { file: Artifact }) {
+       <PdfReader url={url} token={api.token} pageCount={f.pageCount} />
+       <View style={[s.row, { gap: 10, marginVertical: 18, flexWrap: "wrap" }]}>
+         <Button icon={Download} onPress={() => void share()}>
+-          {Platform.OS === "web" ? "Open / download" : "Save or share"}
++          {Platform.OS === "web" ? "打开 / 下载" : "保存或分享"}
+         </Button>
+         <Button
+           icon={Send}
+           onPress={() => open({ type: "email", draft: { attachmentIds: [f.id] } })}
+         >
+-          Attach to email
++          附加到邮件
+         </Button>
+       </View>
+       {f.fields && f.fields.length > 0 && (
+         <Card>
+-          <SectionHeading title="Fill this form" />
++          <SectionHeading title="填写这份表单" />
+           <Text style={[s.muted, { marginBottom: 18 }]}>
+             Add your details below. Saving creates a new copy and keeps the original intact.
+           </Text>
+@@ -834,14 +834,14 @@ function FileDetail({ file: f }: { file: Artifact }) {
+             ),
+           )}
+           <Button primary icon={Save} busy={busy} onPress={() => void fill()}>
+-            Save filled copy
++            保存已填写副本
+           </Button>
+         </Card>
+       )}
+       <ErrorNotice error={error} />
+       <Text style={[s.small, { marginTop: 15 }]}>
+         Added {dateLabel(f.createdAt)}
+-        {f.parentId ? " · filled copy" : ""}
++        {f.parentId ? " · 已填副本" : ""}
+       </Text>
+     </Sheet>
+   );
+@@ -896,7 +896,7 @@ function BrowserDetail({ initial }: { initial: BrowserSession }) {
+       notify(
+         files.length
+           ? `${files.length} PDF download${files.length === 1 ? "" : "s"} added to Files.`
+-          : "No new PDF downloads in this session.",
++          : "本次会话没有新增的 PDF 下载。",
+       );
+     } catch (e) {
+       setError(e instanceof Error ? e.message : String(e));
+@@ -933,7 +933,7 @@ function BrowserDetail({ initial }: { initial: BrowserSession }) {
+       <View style={[s.row, { gap: 10, marginBottom: 16 }]}>
+         <View style={{ flex: 1 }}>
+           <Field
+-            label="Website address"
++            label="网站地址"
+             value={url}
+             onChangeText={setUrl}
+             autoCapitalize="none"
+@@ -942,18 +942,18 @@ function BrowserDetail({ initial }: { initial: BrowserSession }) {
+           />
+         </View>
+         <Button primary busy={busy} disabled={loading || !url.trim()} onPress={() => void mutate()}>
+-          {browser.status === "closed" ? "Reopen" : browser.status === "error" ? "Reconnect" : "Go"}
++          {browser.status === "closed" ? "重新打开" : browser.status === "error" ? "重新连接" : "前往"}
+         </Button>
+       </View>
+       <ErrorNotice error={error} />
+       {loading ? (
+         <View style={[s.row, { gap: 10, paddingVertical: 24 }]}>
+           {error ? (
+-            <Button onPress={() => setRetry(retry + 1)}>Retry connection</Button>
++            <Button onPress={() => setRetry(retry + 1)}>重试连接</Button>
+           ) : (
+             <>
+               <ActivityIndicator color={colors.blueDark} />
+-              <Text style={s.muted}>Connecting to your browser…</Text>
++              <Text style={s.muted}>正在连接浏览器…</Text>
+             </>
+           )}
+         </View>
+@@ -969,12 +969,12 @@ function BrowserDetail({ initial }: { initial: BrowserSession }) {
+         <Empty
+           icon={Globe2}
+           title={
+-            browser.status === "closed" ? "This session is closed" : "Preview is not available"
++            browser.status === "closed" ? "会话已关闭" : "无法预览"
+           }
+           detail={
+             browser.status === "closed"
+-              ? "Your profile and downloads are saved. Reopen to continue where you left off."
+-              : "Reconnect to continue with your saved browser profile."
++              ? "你的资料与下载已保存。重新打开即可从上次离开处继续。"
++              : "重新连接后，可继续使用已保存的浏览器资料。"
+           }
+         />
+       )}
+@@ -984,12 +984,12 @@ function BrowserDetail({ initial }: { initial: BrowserSession }) {
+             icon={ExternalLink}
+             onPress={() => void Linking.openURL(api.url(browser.consoleUrl || ""))}
+           >
+-            Open browser in a window
++            在窗口中打开浏览器
+           </Button>
+         )}
+         {!loading && (
+           <Button icon={RotateCw} disabled={busy} onPress={() => setRetry(retry + 1)}>
+-            Refresh connection
++            刷新连接
+           </Button>
+         )}
+         {!loading && browser.status !== "closed" && (
+@@ -999,7 +999,7 @@ function BrowserDetail({ initial }: { initial: BrowserSession }) {
+         )}
+         {!loading && browser.status !== "closed" && (
+           <Button icon={X} danger busy={busy} onPress={() => void mutate(true)}>
+-            Close session
++            关闭会话
+           </Button>
+         )}
+       </View>
+diff --git a/apps/mobile/src/jev-actions.ts b/apps/mobile/src/jev-actions.ts
+index 760acea..4bc4eb6 100644
+--- a/apps/mobile/src/jev-actions.ts
++++ b/apps/mobile/src/jev-actions.ts
+@@ -100,7 +100,7 @@ export function retryChoiceAvailable(
+ }
+ 
+ export function selectionText(panel: JevPanel, optionId: string): string {
+-  if (!panel.options.some((option) => option.id === optionId)) throw new Error("Unknown choice");
++  if (!panel.options.some((option) => option.id === optionId)) throw new Error("未知选项");
+   return encodeJevAction({
+     panelId: panel.id,
+     threadId: panel.threadId,
+@@ -148,11 +148,11 @@ function panelForAction(messages: readonly unknown[], action: JevAction): JevPan
+ export function displayJevUserMessage(text: string, precedingMessages: readonly unknown[]): string {
+   if (!text.startsWith(jevActionPrefix)) return text;
+   const action = actionFromText(text);
+-  if (!action) return "Choice unavailable";
++  if (!action) return "选项不可用";
+   const option = panelForAction(precedingMessages, action)?.options.find(
+     (candidate) => candidate.id === action.optionId,
+   );
+-  return option ? `Selected: ${option.label}` : "Choice unavailable";
++  return option ? `已选：${option.label}` : "选项不可用";
+ }
+ 
+ export function confirmedJevSelection(
+diff --git a/apps/mobile/src/jev-tool-card.tsx b/apps/mobile/src/jev-tool-card.tsx
+index 9456302..d38b3bd 100644
+--- a/apps/mobile/src/jev-tool-card.tsx
++++ b/apps/mobile/src/jev-tool-card.tsx
+@@ -29,10 +29,10 @@ export const JevInteractionContext = createContext<JevInteraction>({
+   canRetry: false,
+   confirmedSelection: () => null,
+   send: async () => {
+-    throw new Error("Open an active conversation to choose an option.");
++    throw new Error("打开一个进行中的对话以进行选择。");
+   },
+   retry: async () => {
+-    throw new Error("Open an active conversation to retry a choice.");
++    throw new Error("打开一个进行中的对话以重试选择。");
+   },
+ });
+ 
+@@ -70,7 +70,7 @@ function ChoiceButton({
+   onChoose: (optionId: string) => void;
+ }) {
+   if (panel.type === "comparison") {
+-    const caption = /exhibit/i.test(panel.title) ? "Choose this exhibit" : "Choose this option";
++    const caption = /exhibit/i.test(panel.title) ? "选择此展项" : "选择此选项";
+     return (
+       <Pressable
+         accessibilityRole="button"
+@@ -118,13 +118,13 @@ export function JevToolCard({ result, loading }: { result: unknown; loading: boo
+     return (
+       <View style={[s.row, { gap: 10, padding: 14 }]}>
+         <ActivityIndicator size="small" color={colors.blueDark} />
+-        <Text style={s.muted}>Preparing choices…</Text>
++        <Text style={s.muted}>正在准备选项…</Text>
+       </View>
+     );
+   }
+ 
+   const parsed = parseJevResult(result);
+-  if (!parsed) return <ErrorNotice error="The choices could not be displayed. Please retry." />;
++  if (!parsed) return <ErrorNotice error="选项无法显示，请重试。" />;
+   if (parsed.error) return <ErrorNotice error={parsed.error} />;
+   const panel = parsed.panel;
+   if (!panel) return null;
+@@ -191,13 +191,13 @@ export function JevToolCard({ result, loading }: { result: unknown; loading: boo
+     <Card style={{ width: "100%", maxWidth: 440, padding: 17, gap: 13 }}>
+       <View style={{ gap: 5 }}>
+         <Text style={s.heading}>{panel.title}</Text>
+-        {panel.mode === "sample" && <Text style={s.small}>Sample · scripted decisions</Text>}
+-        {panel.mode === "live" && <Text style={s.small}>Live Jev · model decisions</Text>}
++        {panel.mode === "sample" && <Text style={s.small}>示例 · 脚本化决策</Text>}
++        {panel.mode === "live" && <Text style={s.small}>实时 Jev · 模型决策</Text>}
+         {preferredOption && !selectedId && (
+           <Text style={s.small}>Previous preference: {preferredOption.label}</Text>
+         )}
+-        {stale && <Text style={s.small}>Earlier choices</Text>}
+-        {selectedId && <Text style={s.small}>Choice submitted</Text>}
++        {stale && <Text style={s.small}>之前的选择</Text>}
++        {selectedId && <Text style={s.small}>选择已提交</Text>}
+       </View>
+       {panel.type === "clarification" ? (
+         <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+@@ -262,7 +262,7 @@ export function JevToolCard({ result, loading }: { result: unknown; loading: boo
+           }
+           onPress={() => void choose(failedOptionId, true)}
+         >
+-          Retry choice
++          重新选择
+         </Button>
+       )}
+     </Card>
+diff --git a/apps/mobile/src/mail-tool-card.tsx b/apps/mobile/src/mail-tool-card.tsx
+index 3e0ed19..3fb2c2d 100644
+--- a/apps/mobile/src/mail-tool-card.tsx
++++ b/apps/mobile/src/mail-tool-card.tsx
+@@ -50,7 +50,7 @@ export function MailToolCard({
+           <Mail size={16} color={colors.muted} />
+         )}
+         <Text style={s.muted}>
+-          {!active ? "Mail reading paused" : search ? "Checking your inbox…" : "Reading the email…"}
++          {!active ? "邮件读取已暂停" : search ? "正在查看收件箱…" : "正在读取邮件…"}
+         </Text>
+       </View>
+     );
+@@ -59,7 +59,7 @@ export function MailToolCard({
+       .object({ matches: z.array(z.object({ id: z.string() })), truncated: z.boolean() })
+       .safeParse(value);
+     if (!parsed.success)
+-      return <ErrorNotice error="The mailbox did not return readable results." />;
++      return <ErrorNotice error="邮箱未返回可读结果。" />;
+     const count = parsed.data.matches.length;
+     return (
+       <View style={[s.row, { gap: 9, padding: 12 }]}>
+@@ -67,7 +67,7 @@ export function MailToolCard({
+         <Text style={s.muted}>
+           {count
+             ? `Found ${parsed.data.truncated ? "at least " : ""}${count} ${count === 1 ? "email" : "emails"}`
+-            : "No matching emails"}
++            : "无匹配的邮件"}
+         </Text>
+       </View>
+     );
+@@ -75,9 +75,9 @@ export function MailToolCard({
+   const parsed = z
+     .object({ messages: z.array(messageSchema), truncated: z.boolean() })
+     .safeParse(value);
+-  if (!parsed.success) return <ErrorNotice error="The email could not be displayed." />;
++  if (!parsed.success) return <ErrorNotice error="无法显示该邮件。" />;
+   const message = parsed.data.messages.at(-1);
+-  if (!message) return <Text style={s.muted}>No messages in this thread.</Text>;
++  if (!message) return <Text style={s.muted}>此对话串中暂无消息。</Text>;
+   return (
+     <Card
+       style={{ padding: 18, gap: 14, backgroundColor: "#F0EFF2", maxWidth: 440, width: "100%" }}
+@@ -89,10 +89,10 @@ export function MailToolCard({
+         <View style={{ flex: 1 }}>
+           <Text style={[s.text, { fontWeight: "600" }]}>{message.sender}</Text>
+           <Text style={s.small}>
+-            Email ·{" "}
++            邮件 ·{" "}
+             {parsed.data.messages.length === 1
+-              ? "1 message"
+-              : `${parsed.data.messages.length} messages`}
++              ? "1 封邮件"
++              : `${parsed.data.messages.length} 封邮件`}
+           </Text>
+         </View>
+       </View>
+@@ -100,9 +100,9 @@ export function MailToolCard({
+       <Text style={s.muted} numberOfLines={3}>
+         {message.body}
+       </Text>
+-      {parsed.data.truncated && <Text style={s.small}>Showing an excerpt of this thread.</Text>}
++      {parsed.data.truncated && <Text style={s.small}>显示的是此对话串的摘录。</Text>}
+       <Button small icon={Mail} onPress={() => open({ type: "mail", mail: message })}>
+-        Open email
++        打开邮件
+       </Button>
+     </Card>
+   );
+diff --git a/apps/mobile/src/relative-date.ts b/apps/mobile/src/relative-date.ts
+index 642c6d9..829b755 100644
+--- a/apps/mobile/src/relative-date.ts
++++ b/apps/mobile/src/relative-date.ts
+@@ -1,6 +1,6 @@
+ /**
+  * Relative time for activity timestamps. Values slightly in the future are
+- * clock skew and still read "Just now"; further future values fall back to a
++ * clock skew and still read "刚刚"; further future values fall back to a
+  * date instead of claiming they just happened.
+  */
+ export function relativeDate(value: string, now = Date.now()): string {
+@@ -9,12 +9,12 @@ export function relativeDate(value: string, now = Date.now()): string {
+   const diff = now - parsed;
+   if (diff < -60_000) return dayLabel(parsed);
+   const elapsed = Math.max(0, diff);
+-  if (elapsed < 60_000) return "Just now";
+-  if (elapsed < 3600_000) return `${Math.floor(elapsed / 60_000)}m ago`;
+-  if (elapsed < 86400_000) return `${Math.floor(elapsed / 3600_000)}h ago`;
++  if (elapsed < 60_000) return "刚刚";
++  if (elapsed < 3600_000) return `${Math.floor(elapsed / 60_000)} 分钟前`;
++  if (elapsed < 86400_000) return `${Math.floor(elapsed / 3600_000)} 小时前`;
+   return dayLabel(parsed);
+ }
+ 
+ function dayLabel(value: number): string {
+-  return new Date(value).toLocaleDateString("en-US", { month: "short", day: "numeric" });
++  return new Date(value).toLocaleDateString("zh-CN", { month: "short", day: "numeric" });
+ }
+diff --git a/apps/mobile/src/screens.tsx b/apps/mobile/src/screens.tsx
+index 5f2345a..303a5ab 100644
+--- a/apps/mobile/src/screens.tsx
++++ b/apps/mobile/src/screens.tsx
+@@ -94,7 +94,7 @@ export function TodayScreen() {
+         <View style={{ flex: 1, gap: 15, zIndex: 1 }}>
+           <View style={[s.row, { gap: 7 }]}>
+             <Sparkles size={13} color={colors.blueDark} />
+-            <Text style={[s.label, { color: colors.blueDark }]}>A little clarity, every day</Text>
++            <Text style={[s.label, { color: colors.blueDark }]}>每天多一点清晰</Text>
+           </View>
+           <Text
+             style={{
+@@ -108,17 +108,17 @@ export function TodayScreen() {
+             Your day, with a little{"\n"}more room to breathe.
+           </Text>
+           <Text style={[s.muted, { maxWidth: 420, color: "#617680" }]}>
+-            {events.length ? `${events.length} things on your calendar` : "Your calendar has room"}
++            {events.length ? `${events.length} things on your calendar` : "你的日历还有空档"}
+             {unread.length ? `, ${unread.length} unread emails` : ""}.{"\n"}Let’s make space for
+             what matters.
+           </Text>
+           <Button
+-            onPress={() => ask("Help me plan my day")}
++            onPress={() => ask("帮我规划今天")}
+             icon={Sparkles}
+             primary
+             style={{ alignSelf: "flex-start", marginTop: 5 }}
+           >
+-            Plan my day
++            规划我的一天
+           </Button>
+         </View>
+         {wide && (
+@@ -159,7 +159,7 @@ export function TodayScreen() {
+               ]}
+             >
+               <Check size={14} color="#739174" />
+-              <Text style={s.small}>A lighter day</Text>
++              <Text style={s.small}>更轻松的一天</Text>
+             </View>
+             <View
+               style={[
+@@ -177,7 +177,7 @@ export function TodayScreen() {
+               ]}
+             >
+               <CalendarDays size={17} color={colors.blueDark} />
+-              <Text style={s.small}>Everything, together</Text>
++              <Text style={s.small}>一切汇聚一处</Text>
+             </View>
+           </View>
+         )}
+@@ -187,7 +187,7 @@ export function TodayScreen() {
+           {
+             label: "UNREAD EMAILS",
+             value: unread.length,
+-            note: "A fresh look at your inbox",
++            note: "换个角度看收件箱",
+             icon: Mail,
+             section: "mail" as const,
+             tint: colors.sky,
+@@ -195,7 +195,7 @@ export function TodayScreen() {
+           {
+             label: "ON THE CALENDAR",
+             value: events.length,
+-            note: "Make room for your priorities",
++            note: "为重要的事腾出空间",
+             icon: CalendarDays,
+             section: "calendar" as const,
+             tint: colors.green,
+@@ -203,7 +203,7 @@ export function TodayScreen() {
+           {
+             label: "WAITING FOR YOU",
+             value: pending.length,
+-            note: "Your review keeps things moving",
++            note: "你的审阅让事情推进",
+             icon: ShieldCheck,
+             section: "activity" as const,
+             tint: colors.lavender,
+@@ -238,8 +238,8 @@ export function TodayScreen() {
+       <View style={{ flexDirection: wide ? "row" : "column", gap: 22 }}>
+         <Card style={{ flex: 1 }}>
+           <SectionHeading
+-            title="On your calendar"
+-            action="Full calendar"
++            title="在你的日历上"
++            action="完整日历"
+             onPress={() => navigate("calendar")}
+           />
+           {events.length ? (
+@@ -247,8 +247,8 @@ export function TodayScreen() {
+           ) : (
+             <Empty
+               icon={CalendarDays}
+-              title="Some breathing room"
+-              detail="No events scheduled today."
++              title="一点喘息的余地"
++              detail="今天没有活动安排。"
+             />
+           )}
+           <Pressable
+@@ -265,13 +265,13 @@ export function TodayScreen() {
+             ]}
+           >
+             <Plus size={15} color={colors.muted} />
+-            <Text style={s.small}>Make time for something</Text>
++            <Text style={s.small}>为某件事腾出时间</Text>
+           </Pressable>
+         </Card>
+         <Card style={{ flex: 1 }}>
+           <SectionHeading
+-            title="From your inbox"
+-            action="Open mail"
++            title="来自你的收件箱"
++            action="打开邮件"
+             onPress={() => navigate("mail")}
+           />
+           {w.mail.length ? (
+@@ -312,22 +312,22 @@ export function TodayScreen() {
+           ) : (
+             <Empty
+               icon={Inbox}
+-              title="Inbox is quiet"
+-              detail="Connect Google to bring your messages here."
++              title="收件箱很安静"
++              detail="连接 Google，将你的消息汇聚至此。"
+             />
+           )}
+         </Card>
+       </View>
+       <View style={{ flexDirection: wide ? "row" : "column", gap: 22 }}>
+         <Card style={{ flex: 1, backgroundColor: "#F0F0E7" }}>
+-          <SectionHeading title="A hand with the little things" />
++          <SectionHeading title="帮你打理琐事" />
+           <Text style={[s.muted, { marginBottom: 15 }]}>
+             Start with a thought. We’ll take it from there.
+           </Text>
+           {[
+-            "What needs my attention today?",
+-            "Help me catch up on my inbox",
+-            "Show my recent documents",
++            "今天有什么需要我关注的？",
++            "帮我处理收件箱里的邮件",
++            "显示我最近的文档",
+           ].map((prompt) => (
+             <Pressable
+               key={prompt}
+@@ -344,8 +344,8 @@ export function TodayScreen() {
+         </Card>
+         <Card style={{ flex: 1 }}>
+           <SectionHeading
+-            title={pending.length ? "Ready for your review" : "Recent activity"}
+-            action="View all"
++            title={pending.length ? "待你审阅" : "最近动态"}
++            action="查看全部"
+             onPress={() => navigate("activity")}
+           />
+           {pending.length
+@@ -355,7 +355,7 @@ export function TodayScreen() {
+                   <LinkRow
+                     key={a.id}
+                     title={a.title}
+-                    detail="Prepared · waiting for your approval"
++                    detail="已备好 · 等待你批准"
+                     onPress={() => open({ type: "review", action: a })}
+                     icon={ShieldCheck}
+                     tint={colors.lavender}
+@@ -423,7 +423,7 @@ export function AgendaRow({
+     >
+       <View style={{ width: 65 }}>
+         <Text style={[s.text, { fontSize: 11 }]}>
+-          {e.allDay ? "All day" : timeLabel(e.start, e.timeZone)}
++          {e.allDay ? "全天" : timeLabel(e.start, e.timeZone)}
+         </Text>
+         {!e.allDay && (
+           <Text style={[s.small, { fontSize: 10 }]}>{timeLabel(e.end, e.timeZone)}</Text>
+@@ -440,7 +440,7 @@ export function AgendaRow({
+       <View style={{ flex: 1, gap: 3 }}>
+         <Text style={[s.text, { fontSize: 13, fontWeight: "500" }]}>{e.title}</Text>
+         <Text numberOfLines={1} style={[s.small, { fontSize: 11 }]}>
+-          {e.location || (e.attendees.length ? `${e.attendees.length} attendees` : "Time for you")}
++          {e.location || (e.attendees.length ? `${e.attendees.length} attendees` : "留给自己的时间")}
+         </Text>
+       </View>
+       <ChevronRight size={14} color={colors.muted} />
+@@ -496,8 +496,8 @@ export function MailScreen() {
+         >
+           <Search size={16} color={colors.muted} />
+           <TextInput
+-            accessibilityLabel="Search mail"
+-            placeholder="Search your inbox"
++            accessibilityLabel="搜索邮件"
++            placeholder="搜索收件箱"
+             placeholderTextColor={colors.muted}
+             value={query}
+             onChangeText={setQuery}
+@@ -512,7 +512,7 @@ export function MailScreen() {
+       <Card>
+         <View style={[s.row, { gap: 10, marginBottom: 15, flexWrap: "wrap" }]}>
+           <Button small primary={tab === "all"} onPress={() => setTab("all")}>
+-            All messages
++            全部消息
+           </Button>
+           <Button small primary={tab === "unread"} onPress={() => setTab("unread")}>
+             Unread · {w.mail.filter((m) => m.unread).length}
+@@ -535,8 +535,8 @@ export function MailScreen() {
+           ) : (
+             <Empty
+               icon={Mail}
+-              title="A fresh page"
+-              detail="Messages you save as drafts will be here when you’re ready."
++              title="全新的一页"
++              detail="你保存为草稿的消息会放在这里，随时可用。"
+             />
+           )
+         ) : items.length ? (
+@@ -578,11 +578,11 @@ export function MailScreen() {
+         ) : (
+           <Empty
+             icon={Inbox}
+-            title={query ? "No matching messages" : "Nothing in your inbox"}
++            title={query ? "没有匹配的消息" : "收件箱空空如也"}
+             detail={
+               query
+-                ? "Try a different name or subject."
+-                : "Connect Google in Connections to read your mail here."
++                ? "试试其他名称或主题。"
++                : "在「连接」中连接 Google，即可在此阅读邮件。"
+             }
+           />
+         )}
+@@ -689,26 +689,26 @@ export function CalendarScreen() {
+       <View style={[s.between, { gap: 12, flexWrap: "wrap" }]}>
+         <View style={[s.row, { gap: 8 }]}>
+           <Text style={s.title}>
+-            {anchor.toLocaleDateString("en-US", { month: "long", year: "numeric" })}
++            {anchor.toLocaleDateString("zh-CN", { month: "long", year: "numeric" })}
+           </Text>
+           <IconButton
+             icon={ChevronLeft}
+-            label="Previous week"
++            label="上周"
+             onPress={() => setDate(plusDays(date, -7))}
+           />
+           <IconButton
+             icon={ChevronRight}
+-            label="Next week"
++            label="下周"
+             onPress={() => setDate(plusDays(date, 7))}
+           />
+         </View>
+         <Button primary icon={Plus} disabled={!writable} onPress={newEvent}>
+-          New event
++          新建日程
+         </Button>
+       </View>
+       {calendars.length > 0 && (
+         <View style={{ gap: 9 }}>
+-          <Text style={s.label}>Your calendars</Text>
++          <Text style={s.label}>你的日历</Text>
+           <View style={[s.row, { gap: 8, flexWrap: "wrap" }]}>
+             {calendars.map((c) => (
+               <Button
+@@ -747,7 +747,7 @@ export function CalendarScreen() {
+                   backgroundColor: key === date ? colors.sky : "transparent",
+                 }}
+               >
+-                <Text style={s.small}>{day.toLocaleDateString("en-US", { weekday: "short" })}</Text>
++                <Text style={s.small}>{day.toLocaleDateString("zh-CN", { weekday: "short" })}</Text>
+                 <Text
+                   style={[
+                     s.title,
+@@ -777,26 +777,26 @@ export function CalendarScreen() {
+         <View style={[s.between, { gap: 10, flexWrap: "wrap" }]}>
+           <Text style={s.heading}>
+             {all
+-              ? "The next 30 days"
++              ? "未来 30 天"
+               : dateLabel(`${date}T12:00:00`, { weekday: "long", month: "long", day: "numeric" })}
+           </Text>
+           <Button small onPress={() => setAll(!all)}>
+-            {all ? "Selected day" : "Next 30 days"}
++            {all ? "所选日期" : "未来 30 天"}
+           </Button>
+         </View>
+         <Text style={[s.small, { marginTop: 7, marginBottom: 13 }]}>
+-          {selected?.name || "Your calendar"} · {zone}. Events show their own time zone.
++          {selected?.name || "你的日历"} · {zone}. Events show their own time zone.
+         </Text>
+         <ErrorNotice error={error} />
+         {!!error && (
+           <Button small onPress={() => setRetry(retry + 1)}>
+-            Try again
++            重试
+           </Button>
+         )}
+         {loading ? (
+           <View style={[s.row, { gap: 10, paddingVertical: 35, justifyContent: "center" }]}>
+             <ActivityIndicator size="small" color={colors.blueDark} />
+-            <Text style={s.muted}>Checking your calendar…</Text>
++            <Text style={s.muted}>正在查看你的日历…</Text>
+           </View>
+         ) : events.length ? (
+           events.map((e, i) => (
+@@ -810,16 +810,16 @@ export function CalendarScreen() {
+           !error && (
+             <Empty
+               icon={CalendarDays}
+-              title="A little open space"
++              title="一点留白"
+               detail={
+                 all
+-                  ? "There’s nothing scheduled for the next 30 days."
+-                  : "There’s nothing on the calendar for this day."
++                  ? "未来 30 天暂无安排。"
++                  : "这一天暂无日程。"
+               }
+             >
+               {writable && (
+                 <Button icon={Plus} onPress={newEvent}>
+-                  Add an event
++                  添加日程
+                 </Button>
+               )}
+             </Empty>
+@@ -856,13 +856,13 @@ export function BrowserScreen() {
+         <View style={[s.row, { gap: 12, marginBottom: 15 }]}>
+           <Globe2 size={22} color={colors.blueDark} />
+           <View>
+-            <Text style={s.heading}>A place for your open tabs</Text>
+-            <Text style={s.muted}>Browse in a private, persistent workspace session.</Text>
++            <Text style={s.heading}>打开的标签页的归处</Text>
++            <Text style={s.muted}>在私密、持久的工作区会话中浏览。</Text>
+           </View>
+         </View>
+         <View style={[s.row, { gap: 10 }]}>
+           <TextInput
+-            accessibilityLabel="Website address"
++            accessibilityLabel="网站地址"
+             value={url}
+             onChangeText={setUrl}
+             onSubmitEditing={() => void create()}
+@@ -878,13 +878,13 @@ export function BrowserScreen() {
+             disabled={!url.trim()}
+             onPress={() => void create()}
+           >
+-            Open session
++            打开会话
+           </Button>
+         </View>
+         <ErrorNotice error={error} />
+       </Card>
+       <Card>
+-        <SectionHeading title="Browser sessions" />
++        <SectionHeading title="浏览器会话" />
+         {w.browsers.length ? (
+           w.browsers.map((b) => (
+             <Pressable
+@@ -902,7 +902,7 @@ export function BrowserScreen() {
+                   <Globe2 size={20} color={colors.blueDark} />
+                 </View>
+                 <View style={{ flex: 1, gap: 4 }}>
+-                  <Text style={s.heading}>{b.title || "Browser session"}</Text>
++                  <Text style={s.heading}>{b.title || "浏览器会话"}</Text>
+                   <Text style={s.muted} numberOfLines={1}>
+                     {b.url}
+                   </Text>
+@@ -927,8 +927,8 @@ export function BrowserScreen() {
+         ) : (
+           <Empty
+             icon={Globe2}
+-            title="Start with a website"
+-            detail="Open a session above to keep your browsing together. Live previews appear when the browser worker is configured."
++            title="从一个网站开始"
++            detail="在上方新建会话，集中管理你的浏览。配置好浏览器执行器后，这里会显示实时预览。"
+           />
+         )}
+       </Card>
+@@ -953,7 +953,7 @@ export function FilesScreen() {
+       if (Platform.OS === "web") {
+         const form = new FormData();
+         if (!file.file)
+-          throw new Error("The selected file could not be read. Please choose it again.");
++          throw new Error("无法读取所选文件，请重新选择。");
+         form.append("file", file.file, file.name);
+         artifact = await api.request<Artifact>("/api/files", form);
+       } else {
+@@ -966,7 +966,7 @@ export function FilesScreen() {
+         });
+         const payload = JSON.parse(result.body);
+         if (result.status < 200 || result.status >= 300)
+-          throw new Error(payload.error || "Could not import this PDF.");
++          throw new Error(payload.error || "无法导入这份 PDF。");
+         artifact = payload;
+       }
+       await refresh();
+@@ -1018,7 +1018,7 @@ export function FilesScreen() {
+                 >
+                   <View style={[s.row, { gap: 5, marginBottom: 15 }]}>
+                     <FileText size={13} color={colors.blueDark} />
+-                    <Text style={{ fontSize: 7, color: colors.blueDark }}>DOCUMENT</Text>
++                    <Text style={{ fontSize: 7, color: colors.blueDark }}>文档</Text>
+                   </View>
+                   {[100, 75, 90, 95, 60].map((width, i) => (
+                     <View
+@@ -1042,7 +1042,7 @@ export function FilesScreen() {
+                   {f.name}
+                 </Text>
+                 <Text style={s.small}>
+-                  {f.pageCount} {f.pageCount === 1 ? "page" : "pages"} ·{" "}
++                  {f.pageCount} {f.pageCount === 1 ? "页" : "页"} ·{" "}
+                   {Math.max(1, Math.round(f.size / 1024))} KB
+                 </Text>
+                 <View style={[s.between, { marginTop: 9 }]}>
+@@ -1058,8 +1058,8 @@ export function FilesScreen() {
+         <Card>
+           <Empty
+             icon={FileText}
+-            title="Your documents live here"
+-            detail="Import a PDF or open a mail attachment to read, fill supported form fields, and share a copy."
++            title="你的文档都在这里"
++            detail="导入 PDF 或打开邮件附件，即可阅读、填写受支持的表单字段并分享副本。"
+           />
+         </Card>
+       )}
+@@ -1075,7 +1075,7 @@ export function ActivityScreen() {
+     <View style={{ gap: 20 }}>
+       <View style={[s.row, { gap: 10 }]}>
+         <Button small primary={filter === "all"} onPress={() => setFilter("all")}>
+-          All activity
++          全部活动
+         </Button>
+         <Button small primary={filter === "review"} onPress={() => setFilter("review")}>
+           Needs review · {pending.length}
+@@ -1083,7 +1083,7 @@ export function ActivityScreen() {
+       </View>
+       {actions.length > 0 && (
+         <Card>
+-          <SectionHeading title="Your actions" />
++          <SectionHeading title="你的操作" />
+           {actions.map((a) => (
+             <Pressable
+               key={a.id}
+@@ -1130,7 +1130,7 @@ export function ActivityScreen() {
+       )}
+       {filter === "all" && (
+         <Card>
+-          <SectionHeading title="Workspace timeline" />
++          <SectionHeading title="工作区时间线" />
+           {w.activity.length ? (
+             w.activity.map((a, i) => (
+               <View
+@@ -1164,8 +1164,8 @@ export function ActivityScreen() {
+           ) : (
+             <Empty
+               icon={Clock3}
+-              title="The beginning of something lighter"
+-              detail="Your actions and their results will be recorded here."
++              title="更轻松的开端"
++              detail="你的操作及结果会记录在这里。"
+             />
+           )}
+         </Card>
+@@ -1174,8 +1174,8 @@ export function ActivityScreen() {
+         <Card>
+           <Empty
+             icon={ShieldCheck}
+-            title="You’re all caught up"
+-            detail="When an email or calendar change needs your approval, it will appear here."
++            title="全部处理完毕"
++            detail="当有邮件或日历变更需要你批准时，会显示在这里。"
+           />
+         </Card>
+       )}
+@@ -1197,10 +1197,10 @@ export function ConnectionsScreen({ query = "" }: { query?: string }) {
+       );
+       if (result.url) {
+         await Linking.openURL(result.url);
+-        notify("Finish connecting in your browser, then refresh your workspace.");
++        notify("请在浏览器中完成连接，然后刷新工作区。");
+       } else {
+         await refresh();
+-        notify("Local Google data is ready.");
++        notify("本地 Google 数据已就绪。");
+       }
+     } catch (e) {
+       setError(e instanceof Error ? e.message : String(e));
+@@ -1214,7 +1214,7 @@ export function ConnectionsScreen({ query = "" }: { query?: string }) {
+     try {
+       await api.request("/api/google/disconnect", {});
+       await refresh();
+-      notify("Google disconnected.");
++      notify("Google 已断开连接。");
+     } catch (e) {
+       setError(e instanceof Error ? e.message : String(e));
+     } finally {
+@@ -1235,7 +1235,7 @@ export function ConnectionsScreen({ query = "" }: { query?: string }) {
+     },
+     {
+       id: "browser",
+-      name: "Agent computer",
++      name: "智能体电脑",
+       icon: Globe2,
+       color: "#1987CF",
+       connected: w.connections.some((c) => c.id === "browser" && c.status === "connected"),
+@@ -1260,9 +1260,9 @@ export function ConnectionsScreen({ query = "" }: { query?: string }) {
+             <Text style={[s.small, { marginLeft: 12 }]}>
+               {isConnected
+                 ? w.mode === "sample"
+-                  ? "Your connections"
+-                  : "Connected"
+-                : "Available integrations"}
++                  ? "你的连接"
++                  : "已连接"
++                : "可用集成"}
+             </Text>
+             <View style={{ paddingHorizontal: 16, borderRadius: 23, backgroundColor: "#F3F4F5" }}>
+               {group.map((row, index) => (
+@@ -1297,7 +1297,7 @@ export function ConnectionsScreen({ query = "" }: { query?: string }) {
+                   </View>
+                   <Text style={[s.text, { flex: 1 }]}>{row.name}</Text>
+                   {row.connected && row.group === "google" && w.mode === "sample" && (
+-                    <Text style={s.small}>Local data</Text>
++                    <Text style={s.small}>本地数据</Text>
+                   )}
+                   {row.connected ? (
+                     <ChevronRight size={18} color="#A4A7AA" />
+@@ -1308,7 +1308,7 @@ export function ConnectionsScreen({ query = "" }: { query?: string }) {
+                         color: row.group === "google" ? colors.blueDark : colors.muted,
+                       }}
+                     >
+-                      {row.group === "google" ? "Connect" : "Setup"}
++                      {row.group === "google" ? "连接" : "设置"}
+                     </Text>
+                   )}
+                 </Pressable>
+@@ -1317,18 +1317,17 @@ export function ConnectionsScreen({ query = "" }: { query?: string }) {
+           </View>
+         );
+       })}
+-      {!rows.length && <Text style={s.muted}>No matching connectors.</Text>}
++      {!rows.length && <Text style={s.muted}>没有匹配的连接。</Text>}
+       {selected && (
+         <Sheet
+-          title={selected === "google" ? "Google connections" : "OpenBot"}
+-          subtitle={selected === "google" ? google?.account : "A computer for your agent"}
++          title={selected === "google" ? "Google 连接" : "OpenBot"}
++          subtitle={selected === "google" ? google?.account : "智能体的专属电脑"}
+           onClose={() => setSelected(undefined)}
+         >
+           {selected === "google" ? (
+             <View style={{ gap: 18 }}>
+               <Text style={s.muted}>
+-                Bring Gmail and Google Calendar into your conversations. Choose read access, then
+-                enable sending and editing when you need it.
++                把 Gmail 和 Google 日历带进你的对话。先选择读取权限，需要时再开启发送和编辑功能。
+               </Text>
+               <View style={[s.row, { gap: 7, flexWrap: "wrap" }]}>
+                 {google?.capabilities.map((cap) => (
+@@ -1337,40 +1336,40 @@ export function ConnectionsScreen({ query = "" }: { query?: string }) {
+               </View>
+               <ErrorNotice error={error} />
+               <Button busy={busy} primary icon={Link2} onPress={() => void connect("read")}>
+-                Connect Google
++                连接 Google
+               </Button>
+               <Button busy={busy} onPress={() => void connect("write")}>
+-                Enable sending & editing
++                启用发送与编辑
+               </Button>
+               {connected && (
+                 <Button busy={busy} danger onPress={() => void disconnect()}>
+-                  Disconnect Google
++                  断开 Google 连接
+                 </Button>
+               )}
+               <SettingsLine
+-                label="Environment"
+-                value={w.mode === "sample" ? "Local · example data" : "Live workspace"}
++                label="环境"
++                value={w.mode === "sample" ? "本地 · 示例数据" : "实时工作区"}
+               />
+               <SettingsLine
+-                label="Assistant"
++                label="助手"
+                 value={
+                   w.runtime.provider === "sample"
+-                    ? "Guided workflows"
++                    ? "引导式工作流"
+                     : w.runtime.configured
+-                      ? "Model connected"
+-                      : "Model not configured"
++                      ? "模型已连接"
++                      : "模型未配置"
+                 }
+               />
+               <SettingsLine
+-                label="Rich Threads"
+-                value={w.runtime.richThreads ? "CopilotKit Intelligence" : "Not connected"}
++                label="富文本对话"
++                value={w.runtime.richThreads ? "CopilotKit Intelligence" : "未连接"}
+               />
+               <Button
+                 small
+                 icon={ArrowDownToLine}
+                 onPress={() => void refresh().catch((e) => setError(String(e)))}
+               >
+-                Refresh connections
++                刷新连接
+               </Button>
+             </View>
+           ) : (
+@@ -1407,12 +1406,12 @@ function SettingsLine({ label, value }: { label: string; value: string }) {
+ function capabilityLabel(value: string) {
+   const scope = value.split("/").at(-1) || value;
+   const names: Record<string, string> = {
+-    "gmail.readonly": "Read Gmail",
+-    "gmail.send": "Send Gmail",
+-    "calendar.events.readonly": "Read calendar events",
+-    "calendar.calendarlist.readonly": "Read calendar list",
+-    "calendar.events": "Manage calendar events",
+-    "calendar.readonly": "Read calendars",
++    "gmail.readonly": "读取 Gmail",
++    "gmail.send": "发送 Gmail",
++    "calendar.events.readonly": "读取日历活动",
++    "calendar.calendarlist.readonly": "读取日历列表",
++    "calendar.events": "管理日历活动",
++    "calendar.readonly": "读取日历",
+   };
+   return names[scope] || scope;
+ }
+diff --git a/apps/mobile/src/search-tool-card.tsx b/apps/mobile/src/search-tool-card.tsx
+index 97aa690..a05b828 100644
+--- a/apps/mobile/src/search-tool-card.tsx
++++ b/apps/mobile/src/search-tool-card.tsx
+@@ -28,7 +28,7 @@ export function SearchToolCard({ result, loading }: { result: unknown; loading:
+   const failure = error.success
+     ? error.data.error
+     : !loading && !parsed.success
+-      ? "Search did not return readable results."
++      ? "搜索未返回可读结果。"
+       : "";
+   const sources = parsed.success
+     ? [...new Map(parsed.data.results.map((source) => [source.url, source])).values()]
+@@ -46,14 +46,14 @@ export function SearchToolCard({ result, loading }: { result: unknown; loading:
+         )}
+         <Text style={s.text}>
+           {failure
+-            ? "Search failed"
++            ? "搜索失败"
+             : working
+-              ? "Searching the web…"
++              ? "正在联网搜索…"
+               : loading
+-                ? "Search stopped"
++                ? "搜索已停止"
+                 : count
+                   ? `Found ${count} ${count === 1 ? "source" : "sources"}`
+-                  : "No sources found"}
++                  : "未找到来源"}
+         </Text>
+       </View>
+       {!loading && parsed.success && (
+@@ -66,7 +66,7 @@ export function SearchToolCard({ result, loading }: { result: unknown; loading:
+               onPress={() => {
+                 setLinkError("");
+                 void Linking.openURL(source.url).catch(() =>
+-                  setLinkError("Could not open this source."),
++                  setLinkError("无法打开该来源。"),
+                 );
+               }}
+             >
+@@ -74,7 +74,7 @@ export function SearchToolCard({ result, loading }: { result: unknown; loading:
+             </Text>
+           ))}
+           {parsed.data.truncated && (
+-            <Text style={s.small}>Some search results or excerpts were omitted.</Text>
++            <Text style={s.small}>部分搜索结果或摘录已被省略。</Text>
+           )}
+           {[...new Set(parsed.data.warnings)].map((warning) => (
+             <Text key={warning} style={s.small}>
+diff --git a/apps/mobile/src/thread-artifacts.tsx b/apps/mobile/src/thread-artifacts.tsx
+index 9aa98c4..a42312f 100644
+--- a/apps/mobile/src/thread-artifacts.tsx
++++ b/apps/mobile/src/thread-artifacts.tsx
+@@ -39,7 +39,7 @@ export function FileThreadCard({ file }: { file: Artifact }) {
+             ))
+           ) : (
+             <Text style={s.muted}>
+-              {file.pageCount} {file.pageCount === 1 ? "page" : "pages"} · Tap to read the document
++              {file.pageCount} {file.pageCount === 1 ? "页" : "页"} · 点按阅读文档
+             </Text>
+           )}
+         </View>
+@@ -106,7 +106,7 @@ export function TaskThreadCard({ task }: { task: AgentTask }) {
+       <ErrorNotice error={error} />
+       {!!error && (
+         <Button small onPress={() => setAttempt((value) => value + 1)}>
+-          Reload task results
++          重新加载任务结果
+         </Button>
+       )}
+     </View>
+diff --git a/apps/mobile/src/threads.tsx b/apps/mobile/src/threads.tsx
+index 4f3fb51..363ad6c 100644
+--- a/apps/mobile/src/threads.tsx
++++ b/apps/mobile/src/threads.tsx
+@@ -96,7 +96,7 @@ export function ThreadsProvider({ children }: { children: ReactNode }) {
+ }
+ export function useMuseThread() {
+   const context = useContext(ThreadContext);
+-  if (!context) throw new Error("Threads provider is unavailable");
++  if (!context) throw new Error("对话服务不可用");
+   return context;
+ }
+ export function ThreadsSheet({ onClose }: { onClose: () => void }) {
+@@ -133,7 +133,7 @@ export function ThreadsSheet({ onClose }: { onClose: () => void }) {
+   return (
+     <Sheet
+       title="OpenMuse"
+-      subtitle={workspace.mode === "sample" ? "Your workspace" : workspace.profile.name}
++      subtitle={workspace.mode === "sample" ? "你的工作区" : workspace.profile.name}
+       onClose={onClose}
+     >
+       <View style={{ gap: 14 }}>
+@@ -141,7 +141,7 @@ export function ThreadsSheet({ onClose }: { onClose: () => void }) {
+           <>
+             <ErrorNotice error={mainError} />
+             {mainError ? (
+-              <Button onPress={retry}>Retry main chat</Button>
++              <Button onPress={retry}>重试主对话</Button>
+             ) : (
+               <ActivityIndicator color={colors.blueDark} />
+             )}
+@@ -150,8 +150,8 @@ export function ThreadsSheet({ onClose }: { onClose: () => void }) {
+           <>
+             <LinkRow
+               icon={MessageCircle}
+-              title="Main chat"
+-              detail="Your ongoing conversation"
++              title="主对话"
++              detail="持续进行的对话"
+               onPress={() => {
+                 select({ id: mainId, existing: true });
+                 onClose();
+@@ -165,19 +165,19 @@ export function ThreadsSheet({ onClose }: { onClose: () => void }) {
+                 onClose();
+               }}
+             >
+-              New side chat
++              新建支线对话
+             </Button>
+             <View style={[s.between, { marginTop: 12 }]}>
+-              <Text style={s.heading}>Side chats</Text>
++              <Text style={s.heading}>支线对话</Text>
+               <Button small onPress={() => setArchived(!archived)}>
+-                {archived ? "Show active" : "Archived"}
++                {archived ? "显示活跃" : "已归档"}
+               </Button>
+             </View>
+             {threads.isLoading && <ActivityIndicator color={colors.blueDark} />}
+             <ErrorNotice error={error || threads.error?.message} />
+             {threads.error && (
+               <Button small onPress={threads.refetchThreads}>
+-                Retry conversations
++                重试加载对话
+               </Button>
+             )}
+             {!archived &&
+@@ -191,7 +191,7 @@ export function ThreadsSheet({ onClose }: { onClose: () => void }) {
+                     key={item.id}
+                     icon={MessageCircle}
+                     title={`Side chat ${index + 1}`}
+-                    detail="Open in this app"
++                    detail="在此应用中打开"
+                     onPress={() => {
+                       select(item);
+                       onClose();
+@@ -212,7 +212,7 @@ export function ThreadsSheet({ onClose }: { onClose: () => void }) {
+                 >
+                   <Pressable
+                     accessibilityRole="button"
+-                    accessibilityLabel={`Open conversation: ${thread.name || "Untitled conversation"}`}
++                    accessibilityLabel={`Open conversation: ${thread.name || "未命名对话"}`}
+                     accessibilityState={{ selected: selection.id === thread.id }}
+                     onPress={() => {
+                       select({ id: thread.id, existing: true });
+@@ -222,11 +222,11 @@ export function ThreadsSheet({ onClose }: { onClose: () => void }) {
+                   >
+                     <MessageCircle size={19} color={colors.text} />
+                     <Text style={[s.text, { flex: 1 }]}>
+-                      {thread.name || "Untitled conversation"}
++                      {thread.name || "未命名对话"}
+                     </Text>
+                   </Pressable>
+                   {editing === thread.id && (
+-                    <Field label="Conversation name" value={name} onChangeText={setName} />
++                    <Field label="对话名称" value={name} onChangeText={setName} />
+                   )}
+                   <View style={[s.row, { gap: 8 }]}>
+                     <Button
+@@ -241,7 +241,7 @@ export function ThreadsSheet({ onClose }: { onClose: () => void }) {
+                         }
+                       }}
+                     >
+-                      {editing === thread.id ? "Save name" : "Rename"}
++                      {editing === thread.id ? "保存名称" : "重命名"}
+                     </Button>
+                     <Button
+                       small
+@@ -255,7 +255,7 @@ export function ThreadsSheet({ onClose }: { onClose: () => void }) {
+                         )
+                       }
+                     >
+-                      {thread.archived ? "Restore" : "Archive"}
++                      {thread.archived ? "恢复" : "归档"}
+                     </Button>
+                   </View>
+                 </View>
+@@ -267,14 +267,14 @@ export function ThreadsSheet({ onClose }: { onClose: () => void }) {
+               ) && (
+                 <Text style={s.muted}>
+                   {archived
+-                    ? "No archived conversations."
+-                    : "Keep a separate topic here. Your main chat is always available."}
++                    ? "暂无已归档的对话。"
++                    : "在这里单独讨论一个话题。主对话始终可用。"}
+                 </Text>
+               )}
+             <ErrorNotice error={threads.fetchMoreError?.message} />
+             {threads.hasMoreThreads && (
+               <Button small busy={threads.isFetchingMoreThreads} onPress={threads.fetchMoreThreads}>
+-                Load more conversations
++                加载更多对话
+               </Button>
+             )}
+             <Text style={s.small}>
+@@ -285,8 +285,8 @@ export function ThreadsSheet({ onClose }: { onClose: () => void }) {
+           <>
+             <LinkRow
+               icon={MessageCircle}
+-              title="Main chat"
+-              detail="Saved in this workspace"
++              title="主对话"
++              detail="已保存在此工作区"
+               onPress={() => {
+                 navigate("chat");
+                 onClose();
+@@ -300,8 +300,8 @@ export function ThreadsSheet({ onClose }: { onClose: () => void }) {
+         <View style={s.divider} />
+         <LinkRow
+           icon={Plus}
+-          title="Delegate task"
+-          detail="A plan, document, or spending summary"
++          title="委派任务"
++          detail="一份计划、文档或支出汇总"
+           onPress={() => {
+             onClose();
+             open({ type: "delegate" });
+@@ -309,18 +309,18 @@ export function ThreadsSheet({ onClose }: { onClose: () => void }) {
+         />
+         <LinkRow
+           icon={Monitor}
+-          title="Agent computer"
+-          detail="Browser, sessions and documents"
++          title="智能体电脑"
++          detail="浏览器、会话与文档"
+           onPress={() => {
+             onClose();
+             open({ type: "computer" });
+           }}
+         />
+-        <LinkRow icon={CalendarDays} title="Calendar" onPress={() => go("calendar")} />
+-        <LinkRow icon={FileText} title="Files" onPress={() => go("files")} />
+-        <LinkRow icon={Settings2} title="Apps & settings" onPress={() => go("apps")} />
++        <LinkRow icon={CalendarDays} title="日历" onPress={() => go("calendar")} />
++        <LinkRow icon={FileText} title="文件" onPress={() => go("files")} />
++        <LinkRow icon={Settings2} title="应用与设置" onPress={() => go("apps")} />
+         <Button small icon={RefreshCw} onPress={() => void mutate(refresh)}>
+-          Refresh workspace
++          刷新工作区
+         </Button>
+       </View>
+     </Sheet>
+diff --git a/apps/mobile/src/ui.tsx b/apps/mobile/src/ui.tsx
+index 0346f64..7165d99 100644
+--- a/apps/mobile/src/ui.tsx
++++ b/apps/mobile/src/ui.tsx
+@@ -297,7 +297,7 @@ export function Sheet({
+               <Text style={s.title}>{title}</Text>
+               {!!subtitle && <Text style={s.muted}>{subtitle}</Text>}
+             </View>
+-            <IconButton icon={X} label="Close details" onPress={onClose} />
++            <IconButton icon={X} label="关闭详情" onPress={onClose} />
+           </View>
+           <ScrollView
+             keyboardShouldPersistTaps="handled"
+@@ -413,7 +413,7 @@ export function Mascot({
+     lilac: "#F1ECF9",
+   }[variant];
+   return (
+-    <View accessibilityLabel="OpenMuse capybara" style={{ width: size, height: size }}>
++    <View accessibilityLabel="OpenMuse 水豚" style={{ width: size, height: size }}>
+       <View
+         style={{
+           position: "absolute",
+@@ -438,18 +438,18 @@ export function dateLabel(value: string, options?: Intl.DateTimeFormatOptions) {
+   const date = new Date(value);
+   return Number.isNaN(date.getTime())
+     ? value
+-    : date.toLocaleDateString("en-US", options || { month: "short", day: "numeric" });
++    : date.toLocaleDateString("zh-CN", options || { month: "short", day: "numeric" });
+ }
+ export function timeLabel(value: string, timeZone?: string) {
+   const date = new Date(value);
+   return Number.isNaN(date.getTime())
+     ? value
+-    : date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone });
++    : date.toLocaleTimeString("zh-CN", { hour: "numeric", minute: "2-digit", timeZone });
+ }
+ export { relativeDate } from "./relative-date";
+ 
+ export function resultSummary(value: string) {
+   return /^Saved to (?:sample|local) sent mail(?: · .+)?$/.test(value)
+-    ? "Reply saved in your local Sent mail."
++    ? "回复已保存到本地「已发送」中。"
+     : value;
+ }
+diff --git a/apps/mobile/src/workspace.tsx b/apps/mobile/src/workspace.tsx
+index 552aedc..0aa6603 100644
+--- a/apps/mobile/src/workspace.tsx
++++ b/apps/mobile/src/workspace.tsx
+@@ -37,6 +37,6 @@ export interface WorkspaceContextValue {
+ export const WorkspaceContext = createContext<WorkspaceContextValue | null>(null);
+ export function useWorkspace() {
+   const context = useContext(WorkspaceContext);
+-  if (!context) throw new Error("Workspace is unavailable");
++  if (!context) throw new Error("工作区不可用");
+   return context;
+ }
