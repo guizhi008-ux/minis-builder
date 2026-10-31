@@ -14,17 +14,26 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: CopilotKit/openmuse
-          ref: main
+          ref: a4944f4c471d3dc93b8bfc060b5da309b5216ab2
 
-      - name: Patch bundle identifier
+      - name: Checkout build assets (icon + zh patch)
+        uses: actions/checkout@v4
+        with:
+          path: .builder
+
+      - name: Apply Chinese UI patch and custom icon
         run: |
+          git apply .builder/openmuse-zh.patch
+          cp .builder/openmuse-icon.png apps/mobile/assets/icon.png
           python3 - << 'PYEOF'
           import json
           p = 'apps/mobile/app.json'
           d = json.load(open(p))
           d['expo']['ios']['bundleIdentifier'] = 'app.maroon1835.nance8519'
+          d['expo']['icon'] = './assets/icon.png'
           json.dump(d, open(p, 'w'), indent=2)
           print('bundleIdentifier ->', d['expo']['ios']['bundleIdentifier'])
+          print('icon ->', d['expo']['icon'])
           PYEOF
 
       - name: Setup Node
