@@ -47,8 +47,9 @@ class ViewController: UIViewController {
         statusLabel.numberOfLines = 0
 
         var config = UIButton.Configuration.filled()
-        config.title = "重新激活中继"
-        config.baseFont = .systemFont(ofSize: 24, weight: .bold)
+        var attrs = AttributeContainer()
+        attrs.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        config.attributedTitle = AttributedString("重新激活中继", attributes: attrs)
         config.contentInsets = NSDirectionalEdgeInsets(top: 20, leading: 24, bottom: 20, trailing: 24)
         actionButton.configuration = config
         actionButton.addTarget(self, action: #selector(reactivateTapped), for: .touchUpInside)
