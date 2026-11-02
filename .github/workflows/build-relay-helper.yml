@@ -1,0 +1,47 @@
+name: build-relay-helper
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - name: Checkout builder repo
+        uses: actions/checkout@v4
+
+      - name: Select newest Xcode 26.x if present
+        run: |
+          APP=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -1 || true)
+          if [ -n "$APP" ]; then sudo xcode-select -s "$APP"; fi
+          xcodebuild -version
+          xcrun swiftc --version
+
+      - name: Compile app (unsigned)
+        run: |
+          set -euo pipefail
+          mkdir -p build/MuseRelayHelper.app
+          SDK=$(xcrun --sdk iphoneos --show-sdk-path)
+          echo "SDK: $SDK"
+          xcrun swiftc -sdk "$SDK" -target arm64-apple-ios17.0 -O -parse-as-library \
+            -module-name MuseRelayHelper \
+            -o build/MuseRelayHelper.app/MuseRelayHelper \
+            relayhelper/AppDelegate.swift \
+            relayhelper/SceneDelegate.swift \
+            relayhelper/ViewController.swift
+          cp relayhelper/Info.plist build/MuseRelayHelper.app/Info.plist
+          ls -la build/MuseRelayHelper.app
+          file build/MuseRelayHelper.app/MuseRelayHelper
+
+      - name: Package unsigned app
+        run: |
+          cd build && ditto -c -k --keepParent MuseRelayHelper.app ../MuseRelayHelper-unsigned-app.zip
+          ls -lh ../MuseRelayHelper-unsigned-app.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MuseRelayHelper-unsigned-app
+          path: MuseRelayHelper-unsigned-app.zip
+          retention-days: 7
